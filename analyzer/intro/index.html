@@ -597,28 +597,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verify-your-observer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify Your Observer
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#broker-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Broker Details
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#iata-region-codes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1405,28 +1383,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verify-your-observer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify Your Observer
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#broker-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Broker Details
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#iata-region-codes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1492,42 +1448,24 @@
 </li>
 </ul>
 </div>
-<h2 id="verify-your-observer">Verify Your Observer<a class="headerlink" href="#verify-your-observer" title="Permanent link">&para;</a></h2>
-<p>After setting up any observer path, head to <a href="../verify/">Verify Observer Status</a> to confirm it's online and reporting correctly.</p>
 <hr />
-<h2 id="broker-details">Broker Details<a class="headerlink" href="#broker-details" title="Permanent link">&para;</a></h2>
-<p>All four paths connect to the same redundant broker pair. No username or password is needed.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Primary</th>
-<th>Backup</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Host</strong></td>
-<td><code>mqtt1.meshcore.ca</code></td>
-<td><code>mqtt2.meshcore.ca</code></td>
-</tr>
-<tr>
-<td><strong>Port</strong></td>
-<td>443</td>
-<td>443</td>
-</tr>
-<tr>
-<td><strong>Transport</strong></td>
-<td>WebSockets (TLS)</td>
-<td>WebSockets (TLS)</td>
-</tr>
-<tr>
-<td><strong>Auth</strong></td>
-<td>JWT token</td>
-<td>JWT token</td>
-</tr>
-</tbody>
-</table>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2m-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8z"/></svg></span> <strong>Verify Your Observer</strong></p>
+<hr />
+<p>Confirm your observer is online and reporting to the MeshCore.ca network.</p>
+<p><a href="../verify/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Verify Observer Status</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 19h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-7zM4 3h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m5 4h1V5H9zm0 8h1v-2H9zM5 5v2h2V5zm0 8v2h2v-2z"/></svg></span> <strong>Broker Details</strong></p>
+<hr />
+<p>All paths use the same redundant pair. JWT auth, TLS, no password needed.</p>
+<p><code>mqtt1.meshcore.ca</code> <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.72 21.78a.75.75 0 0 0 1.06-1.06L5.56 17.5h14.69a.75.75 0 0 0 0-1.5H5.56l3.22-3.22a.75.75 0 1 0-1.06-1.06l-4.5 4.5a.75.75 0 0 0 0 1.06zm8.56-9.5a.75.75 0 1 1-1.06-1.06L18.44 8H3.75a.75.75 0 0 1 0-1.5h14.69l-3.22-3.22a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06z"/></svg></span> <code>mqtt2.meshcore.ca</code> (port 443, WSS)</p>
+</li>
+</ul>
+</div>
+<hr />
 <h2 id="iata-region-codes">IATA Region Codes<a class="headerlink" href="#iata-region-codes" title="Permanent link">&para;</a></h2>
 <p>Each observer identifies its region with a 3-character IATA code. Use the airport code nearest to your location. The following codes are supported on <a href="https://live.meshcore.ca">live.meshcore.ca</a> today.</p>
 <details class="note">
