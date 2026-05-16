@@ -586,17 +586,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#meshcoreca-brokers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MeshCore.ca Brokers
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#choose-your-observer-path" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -612,6 +601,17 @@
     <span class="md-ellipsis">
       
         Verify Your Observer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#broker-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Broker Details
       
     </span>
   </a>
@@ -1394,17 +1394,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#meshcoreca-brokers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MeshCore.ca Brokers
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#choose-your-observer-path" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1420,6 +1409,17 @@
     <span class="md-ellipsis">
       
         Verify Your Observer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#broker-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Broker Details
       
     </span>
   </a>
@@ -1458,35 +1458,7 @@
 
 
 <h1 id="analyzer-mqtt-packet-broker">Analyzer &amp; MQTT Packet Broker<a class="headerlink" href="#analyzer-mqtt-packet-broker" title="Permanent link">&para;</a></h1>
-<p>MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding telemetry dashboards, maps, and packet inspectors. This section covers the four ways to connect an observer to the MeshCore.ca broker pair.</p>
-<h2 id="meshcoreca-brokers">MeshCore.ca Brokers<a class="headerlink" href="#meshcoreca-brokers" title="Permanent link">&para;</a></h2>
-<p>All observer paths connect to the same two brokers for redundancy. Both use JWT token authentication and TLS verification. No username or password is needed.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Primary</th>
-<th>Backup</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Host</strong></td>
-<td><code>mqtt1.meshcore.ca</code></td>
-<td><code>mqtt2.meshcore.ca</code></td>
-</tr>
-<tr>
-<td><strong>Port</strong></td>
-<td>443</td>
-<td>443</td>
-</tr>
-<tr>
-<td><strong>Transport</strong></td>
-<td>WebSockets (TLS)</td>
-<td>WebSockets (TLS)</td>
-</tr>
-</tbody>
-</table>
+<p>MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding telemetry dashboards, maps, and packet inspectors. Pick one of the four observer paths below to start reporting to the MeshCore.ca network.</p>
 <h2 id="choose-your-observer-path">Choose Your Observer Path<a class="headerlink" href="#choose-your-observer-path" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
@@ -1523,6 +1495,39 @@
 <h2 id="verify-your-observer">Verify Your Observer<a class="headerlink" href="#verify-your-observer" title="Permanent link">&para;</a></h2>
 <p>After setting up any observer path, head to <a href="../verify/">Verify Observer Status</a> to confirm it's online and reporting correctly.</p>
 <hr />
+<h2 id="broker-details">Broker Details<a class="headerlink" href="#broker-details" title="Permanent link">&para;</a></h2>
+<p>All four paths connect to the same redundant broker pair. No username or password is needed.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Primary</th>
+<th>Backup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Host</strong></td>
+<td><code>mqtt1.meshcore.ca</code></td>
+<td><code>mqtt2.meshcore.ca</code></td>
+</tr>
+<tr>
+<td><strong>Port</strong></td>
+<td>443</td>
+<td>443</td>
+</tr>
+<tr>
+<td><strong>Transport</strong></td>
+<td>WebSockets (TLS)</td>
+<td>WebSockets (TLS)</td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td>JWT token</td>
+<td>JWT token</td>
+</tr>
+</tbody>
+</table>
 <h2 id="iata-region-codes">IATA Region Codes<a class="headerlink" href="#iata-region-codes" title="Permanent link">&para;</a></h2>
 <p>Each observer identifies its region with a 3-character IATA code. Use the airport code nearest to your location. The following codes are supported on <a href="https://live.meshcore.ca">live.meshcore.ca</a> today.</p>
 <details class="note">
