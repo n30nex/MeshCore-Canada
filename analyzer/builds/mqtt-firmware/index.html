@@ -830,6 +830,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#packet-repeating" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packet Repeating
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#broker-slots" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1551,6 +1562,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#packet-repeating" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packet Repeating
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#broker-slots" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1773,13 +1795,17 @@ set mqtt.packets on
 set bridge.enabled on
 set mqtt.rx on
 set mqtt.tx advert
-set repeat on
 reboot
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Room Servers</p>
-<p>For room server roles, change the name (e.g. <code>YOW-Room-Server-01</code>) and omit <code>set repeat on</code>.</p>
+<p>For room server roles, change the name to match (e.g. <code>YOW-Room-Server-01</code>).</p>
 </div>
+<h2 id="packet-repeating">Packet Repeating<a class="headerlink" href="#packet-repeating" title="Permanent link">&para;</a></h2>
+<p>By default, the device will repeat packets for other nodes on the mesh in addition to observing. If that's what you want, no changes needed.</p>
+<p>If you already have a repeater nearby (e.g. one on your roof) and this device should only observe without repeating traffic, disable it:</p>
+<div class="highlight"><pre><span></span><code>set repeat off
+</code></pre></div>
 <h2 id="broker-slots">Broker Slots<a class="headerlink" href="#broker-slots" title="Permanent link">&para;</a></h2>
 <p>These firmware images ship pre-configured with <code>mqtt1.meshcore.ca</code> and <code>mqtt2.meshcore.ca</code> in slots 1 and 2. No action needed unless your slots were cleared or overwritten.</p>
 <details class="note">
