@@ -4,8 +4,10 @@ Add the MeshCore.ca broker pair to an existing pyMC repeater installation. PyMC 
 
 ## Prerequisites
 
-- A working pyMC repeater installation
-- Your 3-character IATA region code (e.g. `YOW` for Ottawa, `YYZ` for Toronto)
+| Requirement | Details |
+|-------------|---------|
+| PyMC | A working pyMC repeater installation |
+| IATA Code | Your 3-character region code (e.g. `YOW` for Ottawa) |
 
 ## Configuration
 
@@ -23,7 +25,7 @@ mqtt:
 Paste the following under `mqtt.brokers` in your config file:
 
 ```yaml
-- name: Canadaverse
+- name: MeshCore-CA
   enabled: true
   host: mqtt1.meshcore.ca
   port: 443
@@ -36,7 +38,7 @@ Paste the following under `mqtt.brokers` in your config file:
     insecure: false
   use_jwt_auth: true
   audience: mqtt1.meshcore.ca
-- name: Canadaverse Backup
+- name: MeshCore-CA Backup
   enabled: true
   host: mqtt2.meshcore.ca
   port: 443
@@ -82,4 +84,4 @@ sudo systemctl restart pymc-repeater
 
 ## Verify
 
-After restarting, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.
+After restarting, head to [Check Your Observer](../verify.md) to confirm it's reporting correctly.

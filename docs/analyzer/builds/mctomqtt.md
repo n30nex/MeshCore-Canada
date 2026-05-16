@@ -1,21 +1,22 @@
-# MCtoMQTT Script (USB Serial Host)
+# MCtoMQTT (USB Serial Host)
 
-Use `meshcoretomqtt` to bridge a USB-connected MeshCore node (repeater, room server, or any packet-log device) to MQTT brokers. This runs on a Linux or macOS host with the device connected over USB serial.
+Bridge a USB-connected MeshCore node to MQTT brokers using `meshcoretomqtt`. This runs on a Linux or macOS host with the device connected over USB serial.
 
-## What It Does
-
-The MCtoMQTT service reads packets from a MeshCore device over its serial port and publishes them to one or more MQTT brokers. A config drop-in file tells it where to send the data.
+!!! info "What it does"
+    The MCtoMQTT service reads packets from a MeshCore device over its serial port and publishes them to one or more MQTT brokers. A config drop-in file tells it where to send the data.
 
 ## Prerequisites
 
-- A MeshCore device with packet logging enabled, connected via USB serial
-- Linux or macOS host
-- `curl` installed
-- Your 3-character IATA region code (e.g. `YOW` for Ottawa, `YYZ` for Toronto)
+| Requirement | Details |
+|-------------|---------|
+| Device | MeshCore node with packet logging enabled, connected via USB serial |
+| Host | Linux or macOS |
+| Tools | `curl` installed |
+| IATA Code | Your 3-character region code (e.g. `YOW` for Ottawa) |
 
-## Quick Setup (One-Liner)
+## Quick Setup
 
-If `meshcoretomqtt` is already installed, run:
+If `meshcoretomqtt` is already installed, run the one-liner to add the MeshCore.ca brokers:
 
 ```bash
 bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
@@ -23,78 +24,83 @@ bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-brok
 
 This creates a config drop-in at `/etc/mctomqtt/config.d/20-meshcore-ca.toml` pointing at the MeshCore.ca broker pair, then restarts the service.
 
-## Fresh Install
+### Fresh Install
 
-If `meshcoretomqtt` is not yet installed, add `--install-mctomqtt` and the script will run the upstream installer first, then apply the broker config:
+If `meshcoretomqtt` is not yet installed, add `--install-mctomqtt` and the script will run the upstream installer first:
 
 ```bash
 bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --install-mctomqtt
 ```
 
-The upstream installer will walk you through serial port selection.
+!!! tip
+    The upstream installer will walk you through serial port selection.
 
 ## Specifying Your Region
 
 Pass your IATA code via the `--iata` flag or the `MESHCORE_CA_IATA` environment variable:
 
-```bash
-bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --iata YOW
-```
+=== "Flag"
 
-Or:
+    ```bash
+    bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --iata YOW
+    ```
 
-```bash
-MESHCORE_CA_IATA=YOW bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
-```
+=== "Environment Variable"
+
+    ```bash
+    MESHCORE_CA_IATA=YOW bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
+    ```
 
 If omitted, the script will prompt interactively.
 
 ## What the Script Creates
 
-The drop-in config at `/etc/mctomqtt/config.d/20-meshcore-ca.toml` looks like this:
+The drop-in config at `/etc/mctomqtt/config.d/20-meshcore-ca.toml`:
 
-```toml
-[general]
-iata = "YOW"
+??? note "View full config"
 
-[[broker]]
-name = "meshcore-ca-1"
-enabled = true
-server = "mqtt1.meshcore.ca"
-port = 443
-transport = "websockets"
-keepalive = 60
-qos = 0
-retain = true
+    ```toml
+    [general]
+    iata = "YOW"
 
-[broker.tls]
-enabled = true
-verify = true
+    [[broker]]
+    name = "meshcore-ca-1"
+    enabled = true
+    server = "mqtt1.meshcore.ca"
+    port = 443
+    transport = "websockets"
+    keepalive = 60
+    qos = 0
+    retain = true
 
-[broker.auth]
-method = "token"
-audience = "mqtt1.meshcore.ca"
+    [broker.tls]
+    enabled = true
+    verify = true
 
-[[broker]]
-name = "meshcore-ca-2"
-enabled = true
-server = "mqtt2.meshcore.ca"
-port = 443
-transport = "websockets"
-keepalive = 60
-qos = 0
-retain = true
+    [broker.auth]
+    method = "token"
+    audience = "mqtt1.meshcore.ca"
 
-[broker.tls]
-enabled = true
-verify = true
+    [[broker]]
+    name = "meshcore-ca-2"
+    enabled = true
+    server = "mqtt2.meshcore.ca"
+    port = 443
+    transport = "websockets"
+    keepalive = 60
+    qos = 0
+    retain = true
 
-[broker.auth]
-method = "token"
-audience = "mqtt2.meshcore.ca"
-```
+    [broker.tls]
+    enabled = true
+    verify = true
 
-## Companion Devices (BLE/Serial/TCP)
+    [broker.auth]
+    method = "token"
+    audience = "mqtt2.meshcore.ca"
+    ```
+
+## Companion Devices (BLE / Serial / TCP)
 
 For companion radios (not packet-log serial hosts), use the companion path instead:
 
@@ -114,15 +120,17 @@ For companion radios (not packet-log serial hosts), use the companion path inste
 
     Config is stored under `%USERPROFILE%\.meshcore-packet-capture\.env.local`.
 
+!!! warning "Windows and Serial Hosts"
+    There is no upstream `meshcoretomqtt` Windows installer. Keep packet-log serial hosts on Linux or macOS. The Windows PowerShell helper is for companion radios only.
+
+## Quick Reference
+
 | Path | Manager | Connection | Config Location |
 |------|---------|------------|-----------------|
 | Serial Host | meshcoretomqtt | USB serial | `/etc/mctomqtt/config.d/20-meshcore-ca.toml` |
 | Companion | meshcore-packet-capture | BLE, serial, or TCP | `~/.meshcore-packet-capture/.env.local` |
 
-!!! warning "Windows and Serial Hosts"
-    There is no upstream `meshcoretomqtt` Windows installer. Keep packet-log serial hosts on Linux or macOS. The Windows PowerShell helper is for companion radios only.
-
-## Additional Script Options
+## Script Options
 
 | Flag | Description |
 |------|-------------|
@@ -136,4 +144,4 @@ For companion radios (not packet-log serial hosts), use the companion path inste
 
 ## Verify
 
-Once your service is running, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.
+Once your service is running, head to [Check Your Observer](../verify.md) to confirm it's reporting correctly.

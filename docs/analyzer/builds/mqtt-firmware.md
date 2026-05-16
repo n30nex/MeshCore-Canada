@@ -2,26 +2,31 @@
 
 Flash observer firmware directly onto a supported board. The device connects to WiFi and publishes mesh traffic to MQTT brokers without a host computer.
 
-These firmware images are pre-compiled by **n30nex** and come pre-configured with the MeshCore.ca broker pair (`mqtt1.meshcore.ca` and `mqtt2.meshcore.ca`) in slots 1 and 2. After flashing, you only need to set your WiFi credentials, IATA region code, and node name.
+!!! info "Pre-configured firmware"
+    These firmware images are pre-compiled by **n30nex** and come pre-configured with the MeshCore.ca broker pair (`mqtt1.meshcore.ca` and `mqtt2.meshcore.ca`) in slots 1 and 2. After flashing, you only need to set your WiFi credentials, IATA region code, and node name.
 
 ## Supported Boards
 
 All boards support both Repeater and Room Server roles.
 
-### Currently Available (Hardware Verified)
+=== "Available (Hardware Verified)"
 
-- Heltec V3
-- Heltec V4 OLED
+    | Board | Notes |
+    |-------|-------|
+    | Heltec V3 | Fully tested |
+    | Heltec V4 OLED | Fully tested |
 
-### Coming Soon (Built, Pending Hardware Validation)
+=== "Coming Soon (Pending Validation)"
 
-- LILYGO T3S3 SX1262
-- T-Beam Supreme SX1262
-- T-Beam SX1262
-- Seeed XIAO ESP32S3 + Wio-SX1262
-- RAK3112
-- Heltec Wireless Tracker
-- Heltec Wireless Paper
+    | Board | Notes |
+    |-------|-------|
+    | LILYGO T3S3 SX1262 | Built, awaiting hardware |
+    | T-Beam Supreme SX1262 | Built, awaiting hardware |
+    | T-Beam SX1262 | Built, awaiting hardware |
+    | Seeed XIAO ESP32S3 + Wio-SX1262 | Built, awaiting hardware |
+    | RAK3112 | Built, awaiting hardware |
+    | Heltec Wireless Tracker | Built, awaiting hardware |
+    | Heltec Wireless Paper | Built, awaiting hardware |
 
 New boards will appear in the firmware picker automatically as they are validated and released.
 
@@ -155,14 +160,19 @@ Pick your board, role, and flash type to get the right firmware image.
 
 ## Prerequisites
 
-- A supported LoRa board (see list above)
-- 2.4 GHz WiFi network credentials
-- Your 3-character IATA region code (e.g. `YOW` for Ottawa, `YYZ` for Toronto)
+| Requirement | Details |
+|-------------|---------|
+| Board | A supported LoRa board (see list above) |
+| WiFi | 2.4 GHz network credentials |
+| IATA Code | Your 3-character region code (e.g. `YOW` for Ottawa) |
 
 ## Flashing
 
 1. Pick your board, role, and flash type from the picker above and download the firmware
 2. Flash using the [MeshCore Flasher](https://flasher.meshcore.io/) or your preferred ESP flashing tool
+
+!!! tip "First time flashing?"
+    Use the **Merged** flash type which includes the bootloader. The **Update** type is for devices already running MeshCore firmware.
 
 ## CLI Setup
 
@@ -201,6 +211,8 @@ These firmware images ship pre-configured with `mqtt1.meshcore.ca` and `mqtt2.me
 
 ??? note "Restore broker slots manually"
 
+    If your broker slots were cleared or overwritten, restore them with:
+
     ```text
     set mqtt1.preset none
     set mqtt2.preset none
@@ -220,10 +232,26 @@ These firmware images ship pre-configured with `mqtt1.meshcore.ca` and `mqtt2.me
 
 ## Verify
 
-Once your device is online, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.
+Once your device is online, head to [Check Your Observer](../verify.md) to confirm it's reporting correctly.
 
 ## Useful Links
 
-- [MeshCore Flasher](https://flasher.meshcore.io/)
-- [MeshCore Config Tool](https://config.meshcore.dev/)
-- [MeshCore CLI Docs](https://meshcore.dev/docs/cli)
+<div class="grid cards" markdown>
+
+-   :material-flash:{ .lg .middle } **MeshCore Flasher**
+
+    ---
+
+    Web-based flashing tool for MeshCore firmware.
+
+    [:octicons-arrow-right-24: flasher.meshcore.io](https://flasher.meshcore.io/)
+
+-   :material-cog:{ .lg .middle } **MeshCore Config Tool**
+
+    ---
+
+    Configure your device settings via the web.
+
+    [:octicons-arrow-right-24: config.meshcore.dev](https://config.meshcore.dev/)
+
+</div>

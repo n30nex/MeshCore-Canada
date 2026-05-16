@@ -4,9 +4,11 @@ Add the MeshCore.ca broker pair to your Home Assistant MeshCore integration. Thi
 
 ## Prerequisites
 
-- Home Assistant with the MeshCore integration installed
-- A MeshCore node connected to HA via USB, BLE, or TCP
-- Your 3-character IATA region code (e.g. `YOW` for Ottawa, `YYZ` for Toronto)
+| Requirement | Details |
+|-------------|---------|
+| Home Assistant | With the MeshCore integration installed |
+| MeshCore Node | Connected to HA via USB, BLE, or TCP |
+| IATA Code | Your 3-character region code (e.g. `YOW` for Ottawa) |
 
 ## Setup
 
@@ -18,17 +20,15 @@ Navigate to:
 
 ### 2. Configure the Primary Broker
 
-Enter the following settings:
-
 | Field | Value |
 |-------|-------|
 | Server | `mqtt1.meshcore.ca` |
 | Port | `443` |
 | Transport | `websockets` |
-| Use TLS | Enabled |
-| TLS Verify | Enabled |
+| Use TLS | :material-check: Enabled |
+| TLS Verify | :material-check: Enabled |
 | Username / Password | Leave blank |
-| Use MeshCore Auth Token | Enabled |
+| Use MeshCore Auth Token | :material-check: Enabled |
 | Token Audience | `mqtt1.meshcore.ca` |
 | Auth Token TTL | Leave default |
 | Payload Mode | `packet` |
@@ -53,6 +53,9 @@ All other fields remain the same as the primary broker.
 
 Make sure your IATA region code is set in the integration. The `{IATA}` placeholder in the topic templates will be replaced with your code (e.g. `YOW`).
 
+!!! tip
+    You can find your nearest IATA code on the [Analyzer Overview](../intro.md) page.
+
 ## Quick Reference
 
 | Setting | Primary | Backup |
@@ -67,4 +70,4 @@ Make sure your IATA region code is set in the integration. The `{IATA}` placehol
 
 ## Verify
 
-After saving, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.
+After saving, head to [Check Your Observer](../verify.md) to confirm it's reporting correctly.

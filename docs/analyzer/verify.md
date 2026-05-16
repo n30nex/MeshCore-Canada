@@ -28,9 +28,14 @@ After setting up your observer using any of the four paths ([MQTT Firmware](buil
 
     [:octicons-arrow-right-24: View Map](https://live.meshcore.ca/#/map)
 
+-   :material-wrench:{ .lg .middle } **Troubleshooting**
+
+    ---
+
+    Not showing up? Path-specific diagnostics for all observer types.
+
+    [:octicons-arrow-right-24: Troubleshooting](troubleshooting.md)
+
 </div>
 
 Your observer should appear within a few minutes of coming online.
-
-!!! tip "Not showing up?"
-    If your observer doesn't appear after a few minutes, check the [Troubleshooting](troubleshooting.md) page for path-specific diagnostics.
