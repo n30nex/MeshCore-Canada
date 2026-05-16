@@ -11,10 +11,17 @@ theme:
       scheme: slate
       primary: indigo
       accent: blue
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.follow
 
 markdown_extensions:
   - admonition
   - attr_list
+  - md_in_html
+  - def_list
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
@@ -23,8 +30,22 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: index.md
-  - Communities:
+  - Welcome: index.md
+  - MeshCore:
+      - Introduction: meshcore/intro.md
+      - FAQ: meshcore/faq.md
+      - Recommended Companions: meshcore/companions.md
+      - Recommended Repeaters: meshcore/repeaters.md
+      - Repeater Build Guides: meshcore/repeater-builds.md
+      - Recommended Antennas: meshcore/antennas.md
+  - Analyzer & MQTT:
+      - Overview: analyzer/intro.md
+      - Build Guides:
+          - MCtoMQTT Script: analyzer/builds/mctomqtt.md
+          - MeshCore-HA: analyzer/builds/meshcore-ha.md
+          - MQTT Firmware: analyzer/builds/mqtt-firmware.md
+          - PyMC: analyzer/builds/pymc.md
+  - Mesh Directory:
       - British Columbia: provinces/british-columbia.md
       - Alberta: provinces/alberta.md
       - Saskatchewan: provinces/saskatchewan.md
@@ -36,4 +57,8 @@ nav:
       - Prince Edward Island: provinces/prince-edward-island.md
       - Newfoundland and Labrador: provinces/newfoundland-and-labrador.md
       - Territories (YT / NT / NU): provinces/territories.md
+  - Resources:
+      - Getting Started: resources/getting-started.md
+      - Useful Links: resources/links.md
+      - Glossary: resources/glossary.md
   - Contributing: contributing.md
