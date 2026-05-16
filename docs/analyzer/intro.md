@@ -48,22 +48,29 @@ MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding 
 
 </div>
 
-## Verify Your Observer
-
-After setting up any observer path, head to [Verify Observer Status](verify.md) to confirm it's online and reporting correctly.
-
 ---
 
-## Broker Details
+<div class="grid cards" markdown>
 
-All four paths connect to the same redundant broker pair. No username or password is needed.
+-   :material-check-circle:{ .lg .middle } **Verify Your Observer**
 
-| | Primary | Backup |
-|---|---------|--------|
-| **Host** | `mqtt1.meshcore.ca` | `mqtt2.meshcore.ca` |
-| **Port** | 443 | 443 |
-| **Transport** | WebSockets (TLS) | WebSockets (TLS) |
-| **Auth** | JWT token | JWT token |
+    ---
+
+    Confirm your observer is online and reporting to the MeshCore.ca network.
+
+    [:octicons-arrow-right-24: Verify Observer Status](verify.md)
+
+-   :material-server-network:{ .lg .middle } **Broker Details**
+
+    ---
+
+    All paths use the same redundant pair. JWT auth, TLS, no password needed.
+
+    `mqtt1.meshcore.ca` :octicons-arrow-switch-24: `mqtt2.meshcore.ca` (port 443, WSS)
+
+</div>
+
+---
 
 ## IATA Region Codes
 
