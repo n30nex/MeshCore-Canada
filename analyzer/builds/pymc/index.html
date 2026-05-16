@@ -1590,10 +1590,24 @@
 <h1 id="pymc-python-meshcore">PyMC (Python MeshCore)<a class="headerlink" href="#pymc-python-meshcore" title="Permanent link">&para;</a></h1>
 <p>Add the MeshCore.ca broker pair to an existing pyMC repeater installation. PyMC connects to your MeshCore device and forwards traffic to MQTT brokers using a YAML config file.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<ul>
-<li>A working pyMC repeater installation</li>
-<li>Your 3-character IATA region code (e.g. <code>YOW</code> for Ottawa, <code>YYZ</code> for Toronto)</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PyMC</td>
+<td>A working pyMC repeater installation</td>
+</tr>
+<tr>
+<td>IATA Code</td>
+<td>Your 3-character region code (e.g. <code>YOW</code> for Ottawa)</td>
+</tr>
+</tbody>
+</table>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
 <h3 id="1-set-your-iata-code">1. Set Your IATA Code<a class="headerlink" href="#1-set-your-iata-code" title="Permanent link">&para;</a></h3>
 <p>In <code>/etc/pymc_repeater/config.yaml</code>, set your region code under the MQTT section:</p>
@@ -1602,7 +1616,7 @@
 </code></pre></div>
 <h3 id="2-add-the-broker-block">2. Add the Broker Block<a class="headerlink" href="#2-add-the-broker-block" title="Permanent link">&para;</a></h3>
 <p>Paste the following under <code>mqtt.brokers</code> in your config file:</p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Canadaverse</span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MeshCore-CA</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mqtt1.meshcore.ca</span>
 <span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span>
@@ -1615,7 +1629,7 @@
 <span class="w">    </span><span class="nt">insecure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">use_jwt_auth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">audience</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mqtt1.meshcore.ca</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Canadaverse Backup</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MeshCore-CA Backup</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mqtt2.meshcore.ca</span>
 <span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span>
@@ -1682,7 +1696,7 @@
 </tbody>
 </table>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
-<p>After restarting, head to <a href="../../verify/">Verify Observer Status</a> to confirm it's reporting correctly.</p>
+<p>After restarting, head to <a href="../../verify/">Check Your Observer</a> to confirm it's reporting correctly.</p>
 
 
 

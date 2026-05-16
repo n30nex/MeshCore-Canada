@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mctomqtt-script-usb-serial-host" class="md-skip">
+        <a href="#mctomqtt-usb-serial-host" class="md-skip">
           Skip to content
         </a>
       
@@ -719,17 +719,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-it-does" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What It Does
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -741,17 +730,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-setup-one-liner" class="md-nav__link">
+  <a href="#quick-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Setup (One-Liner)
+        Quick Setup
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="Quick Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#fresh-install" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -759,6 +749,11 @@
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -785,10 +780,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#companion-devices-bleserialtcp" class="md-nav__link">
+  <a href="#companion-devices-ble-serial-tcp" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Companion Devices (BLE/Serial/TCP)
+        Companion Devices (BLE / Serial / TCP)
       
     </span>
   </a>
@@ -796,10 +791,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-script-options" class="md-nav__link">
+  <a href="#quick-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Script Options
+        Quick Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#script-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script Options
       
     </span>
   </a>
@@ -1479,17 +1485,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-it-does" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What It Does
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1501,17 +1496,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-setup-one-liner" class="md-nav__link">
+  <a href="#quick-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Setup (One-Liner)
+        Quick Setup
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="Quick Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#fresh-install" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1519,6 +1515,11 @@
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1545,10 +1546,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#companion-devices-bleserialtcp" class="md-nav__link">
+  <a href="#companion-devices-ble-serial-tcp" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Companion Devices (BLE/Serial/TCP)
+        Companion Devices (BLE / Serial / TCP)
       
     </span>
   </a>
@@ -1556,10 +1557,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-script-options" class="md-nav__link">
+  <a href="#quick-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Script Options
+        Quick Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#script-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script Options
       
     </span>
   </a>
@@ -1597,37 +1609,71 @@
   
 
 
-<h1 id="mctomqtt-script-usb-serial-host">MCtoMQTT Script (USB Serial Host)<a class="headerlink" href="#mctomqtt-script-usb-serial-host" title="Permanent link">&para;</a></h1>
-<p>Use <code>meshcoretomqtt</code> to bridge a USB-connected MeshCore node (repeater, room server, or any packet-log device) to MQTT brokers. This runs on a Linux or macOS host with the device connected over USB serial.</p>
-<h2 id="what-it-does">What It Does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
+<h1 id="mctomqtt-usb-serial-host">MCtoMQTT (USB Serial Host)<a class="headerlink" href="#mctomqtt-usb-serial-host" title="Permanent link">&para;</a></h1>
+<p>Bridge a USB-connected MeshCore node to MQTT brokers using <code>meshcoretomqtt</code>. This runs on a Linux or macOS host with the device connected over USB serial.</p>
+<div class="admonition info">
+<p class="admonition-title">What it does</p>
 <p>The MCtoMQTT service reads packets from a MeshCore device over its serial port and publishes them to one or more MQTT brokers. A config drop-in file tells it where to send the data.</p>
+</div>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<ul>
-<li>A MeshCore device with packet logging enabled, connected via USB serial</li>
-<li>Linux or macOS host</li>
-<li><code>curl</code> installed</li>
-<li>Your 3-character IATA region code (e.g. <code>YOW</code> for Ottawa, <code>YYZ</code> for Toronto)</li>
-</ul>
-<h2 id="quick-setup-one-liner">Quick Setup (One-Liner)<a class="headerlink" href="#quick-setup-one-liner" title="Permanent link">&para;</a></h2>
-<p>If <code>meshcoretomqtt</code> is already installed, run:</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Device</td>
+<td>MeshCore node with packet logging enabled, connected via USB serial</td>
+</tr>
+<tr>
+<td>Host</td>
+<td>Linux or macOS</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td><code>curl</code> installed</td>
+</tr>
+<tr>
+<td>IATA Code</td>
+<td>Your 3-character region code (e.g. <code>YOW</code> for Ottawa)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="quick-setup">Quick Setup<a class="headerlink" href="#quick-setup" title="Permanent link">&para;</a></h2>
+<p>If <code>meshcoretomqtt</code> is already installed, run the one-liner to add the MeshCore.ca brokers:</p>
 <div class="highlight"><pre><span></span><code>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh<span class="o">)</span><span class="w"> </span>--device<span class="w"> </span>serial-host
 </code></pre></div>
 <p>This creates a config drop-in at <code>/etc/mctomqtt/config.d/20-meshcore-ca.toml</code> pointing at the MeshCore.ca broker pair, then restarts the service.</p>
-<h2 id="fresh-install">Fresh Install<a class="headerlink" href="#fresh-install" title="Permanent link">&para;</a></h2>
-<p>If <code>meshcoretomqtt</code> is not yet installed, add <code>--install-mctomqtt</code> and the script will run the upstream installer first, then apply the broker config:</p>
+<h3 id="fresh-install">Fresh Install<a class="headerlink" href="#fresh-install" title="Permanent link">&para;</a></h3>
+<p>If <code>meshcoretomqtt</code> is not yet installed, add <code>--install-mctomqtt</code> and the script will run the upstream installer first:</p>
 <div class="highlight"><pre><span></span><code>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh<span class="o">)</span><span class="w"> </span>--device<span class="w"> </span>serial-host<span class="w"> </span>--install-mctomqtt
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>The upstream installer will walk you through serial port selection.</p>
+</div>
 <h2 id="specifying-your-region">Specifying Your Region<a class="headerlink" href="#specifying-your-region" title="Permanent link">&para;</a></h2>
 <p>Pass your IATA code via the <code>--iata</code> flag or the <code>MESHCORE_CA_IATA</code> environment variable:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Flag</label><label for="__tabbed_1_2">Environment Variable</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh<span class="o">)</span><span class="w"> </span>--device<span class="w"> </span>serial-host<span class="w"> </span>--iata<span class="w"> </span>YOW
 </code></pre></div>
-<p>Or:</p>
+</div>
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nv">MESHCORE_CA_IATA</span><span class="o">=</span>YOW<span class="w"> </span>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh<span class="o">)</span><span class="w"> </span>--device<span class="w"> </span>serial-host
 </code></pre></div>
+</div>
+</div>
+</div>
 <p>If omitted, the script will prompt interactively.</p>
 <h2 id="what-the-script-creates">What the Script Creates<a class="headerlink" href="#what-the-script-creates" title="Permanent link">&para;</a></h2>
-<p>The drop-in config at <code>/etc/mctomqtt/config.d/20-meshcore-ca.toml</code> looks like this:</p>
+<p>The drop-in config at <code>/etc/mctomqtt/config.d/20-meshcore-ca.toml</code>:</p>
+<details class="note">
+<summary>View full config</summary>
 <div class="highlight"><pre><span></span><code><span class="k">[general]</span>
 <span class="n">iata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;YOW&quot;</span>
 
@@ -1667,9 +1713,10 @@
 <span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;token&quot;</span>
 <span class="n">audience</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mqtt2.meshcore.ca&quot;</span>
 </code></pre></div>
-<h2 id="companion-devices-bleserialtcp">Companion Devices (BLE/Serial/TCP)<a class="headerlink" href="#companion-devices-bleserialtcp" title="Permanent link">&para;</a></h2>
+</details>
+<h2 id="companion-devices-ble-serial-tcp">Companion Devices (BLE / Serial / TCP)<a class="headerlink" href="#companion-devices-ble-serial-tcp" title="Permanent link">&para;</a></h2>
 <p>For companion radios (not packet-log serial hosts), use the companion path instead:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux / macOS</label><label for="__tabbed_1_2">Windows PowerShell</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Linux / macOS</label><label for="__tabbed_2_2">Windows PowerShell</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh<span class="o">)</span><span class="w"> </span>--device<span class="w"> </span>companion
@@ -1683,6 +1730,11 @@
 </div>
 </div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Windows and Serial Hosts</p>
+<p>There is no upstream <code>meshcoretomqtt</code> Windows installer. Keep packet-log serial hosts on Linux or macOS. The Windows PowerShell helper is for companion radios only.</p>
+</div>
+<h2 id="quick-reference">Quick Reference<a class="headerlink" href="#quick-reference" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -1707,11 +1759,7 @@
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">Windows and Serial Hosts</p>
-<p>There is no upstream <code>meshcoretomqtt</code> Windows installer. Keep packet-log serial hosts on Linux or macOS. The Windows PowerShell helper is for companion radios only.</p>
-</div>
-<h2 id="additional-script-options">Additional Script Options<a class="headerlink" href="#additional-script-options" title="Permanent link">&para;</a></h2>
+<h2 id="script-options">Script Options<a class="headerlink" href="#script-options" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -1751,7 +1799,7 @@
 </tbody>
 </table>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
-<p>Once your service is running, head to <a href="../../verify/">Verify Observer Status</a> to confirm it's reporting correctly.</p>
+<p>Once your service is running, head to <a href="../../verify/">Check Your Observer</a> to confirm it's reporting correctly.</p>
 
 
 
