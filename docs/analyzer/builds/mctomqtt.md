@@ -18,7 +18,7 @@ The MCtoMQTT service reads packets from a MeshCore device over its serial port a
 If `meshcoretomqtt` is already installed, run:
 
 ```bash
-bash <(curl -fsSL https://canadaverse.org/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
+bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
 ```
 
 This creates a config drop-in at `/etc/mctomqtt/config.d/20-meshcore-ca.toml` pointing at the MeshCore.ca broker pair, then restarts the service.
@@ -28,7 +28,7 @@ This creates a config drop-in at `/etc/mctomqtt/config.d/20-meshcore-ca.toml` po
 If `meshcoretomqtt` is not yet installed, add `--install-mctomqtt` and the script will run the upstream installer first, then apply the broker config:
 
 ```bash
-bash <(curl -fsSL https://canadaverse.org/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --install-mctomqtt
+bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --install-mctomqtt
 ```
 
 The upstream installer will walk you through serial port selection.
@@ -38,13 +38,13 @@ The upstream installer will walk you through serial port selection.
 Pass your IATA code via the `--iata` flag or the `MESHCORE_CA_IATA` environment variable:
 
 ```bash
-bash <(curl -fsSL https://canadaverse.org/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --iata YOW
+bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host --iata YOW
 ```
 
 Or:
 
 ```bash
-MESHCORE_CA_IATA=YOW bash <(curl -fsSL https://canadaverse.org/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
+MESHCORE_CA_IATA=YOW bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device serial-host
 ```
 
 If omitted, the script will prompt interactively.
@@ -101,7 +101,7 @@ For companion radios (not packet-log serial hosts), use the companion path inste
 === "Linux / macOS"
 
     ```bash
-    bash <(curl -fsSL https://canadaverse.org/scripts/add-canadaverse-meshcore-broker.sh) --device companion
+    bash <(curl -fsSL https://live.meshcore.ca/scripts/add-canadaverse-meshcore-broker.sh) --device companion
     ```
 
     Add `--install-packetcapture` for a fresh install. The upstream installer will walk you through BLE, serial, or TCP connection setup.
@@ -109,7 +109,7 @@ For companion radios (not packet-log serial hosts), use the companion path inste
 === "Windows PowerShell"
 
     ```powershell
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://canadaverse.org/scripts/add-canadaverse-packetcapture-broker.ps1 -UseBasicParsing | iex"
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://live.meshcore.ca/scripts/add-canadaverse-packetcapture-broker.ps1 -UseBasicParsing | iex"
     ```
 
     Config is stored under `%USERPROFILE%\.meshcore-packet-capture\.env.local`.
@@ -136,8 +136,4 @@ For companion radios (not packet-log serial hosts), use the companion path inste
 
 ## Verify
 
-After setup, confirm your observer appears on:
-
-- [CoreScope Observers](https://mqtt.canadaverse.org/)
-- [CoreScope Packets](https://mqtt.canadaverse.org/)
-- [Canadaverse Map](https://canadaverse.org/meshcore-map.html)
+Once your service is running, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.

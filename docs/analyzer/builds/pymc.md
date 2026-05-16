@@ -82,8 +82,4 @@ sudo systemctl restart pymc-repeater
 
 ## Verify
 
-After restarting, confirm your observer appears on:
-
-- [CoreScope Observers](https://mqtt.canadaverse.org/)
-- [CoreScope Packets](https://mqtt.canadaverse.org/)
-- [Canadaverse Map](https://canadaverse.org/meshcore-map.html)
+After restarting, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.

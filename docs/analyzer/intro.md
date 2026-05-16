@@ -167,8 +167,4 @@ Each observer identifies its region with a 3-character IATA code. Use the airpor
 
 ## Verify Your Observer
 
-After setting up any observer path, confirm it's working at:
-
-- [CoreScope Observers](https://mqtt.canadaverse.org/)
-- [CoreScope Packets](https://mqtt.canadaverse.org/)
-- [Canadaverse Map](https://canadaverse.org/meshcore-map.html)
+After setting up any observer path, head to [Verify Observer Status](verify.md) to confirm it's online and reporting correctly.

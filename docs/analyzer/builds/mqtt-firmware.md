@@ -26,7 +26,7 @@ Pick your board, role, and flash type to get the right firmware image.
       <label for="fw-type" style="display: block; font-weight: 600; margin-bottom: 0.3em; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7;">Flash Type</label>
       <select id="fw-type" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;">
         <option value="merged">First Flash (Merged)</option>
-        <option value="update">Update (OTA)</option>
+        <option value="update">Update</option>
       </select>
     </div>
   </div>
@@ -45,7 +45,7 @@ Pick your board, role, and flash type to get the right firmware image.
     return val === "repeater" ? "Repeater" : "Room Server";
   }
   function typeLabel(val) {
-    return val === "merged" ? "First Flash (Merged)" : "Update (OTA)";
+    return val === "merged" ? "First Flash (Merged)" : "Update";
   }
 
   function update() {
@@ -82,14 +82,14 @@ Pick your board, role, and flash type to get the right firmware image.
 
     **Heltec V3**
 
-    | Role | Merged (First Flash) | Update (OTA) |
+    | Role | Merged (First Flash) | Update (Update) |
     |------|----------------------|--------------|
     | Repeater | [meshcore-ca-heltec-v3-repeater-merged-20260515.bin](firmware/meshcore-ca-heltec-v3-repeater-merged-20260515.bin) | [meshcore-ca-heltec-v3-repeater-update-20260515.bin](firmware/meshcore-ca-heltec-v3-repeater-update-20260515.bin) |
     | Room Server | [meshcore-ca-heltec-v3-room-server-merged-20260515.bin](firmware/meshcore-ca-heltec-v3-room-server-merged-20260515.bin) | [meshcore-ca-heltec-v3-room-server-update-20260515.bin](firmware/meshcore-ca-heltec-v3-room-server-update-20260515.bin) |
 
     **Heltec V4 OLED**
 
-    | Role | Merged (First Flash) | Update (OTA) |
+    | Role | Merged (First Flash) | Update (Update) |
     |------|----------------------|--------------|
     | Repeater | [meshcore-ca-heltec-v4-oled-repeater-merged-20260515.bin](firmware/meshcore-ca-heltec-v4-oled-repeater-merged-20260515.bin) | [meshcore-ca-heltec-v4-oled-repeater-update-20260515.bin](firmware/meshcore-ca-heltec-v4-oled-repeater-update-20260515.bin) |
     | Room Server | [meshcore-ca-heltec-v4-oled-room-server-merged-20260515.bin](firmware/meshcore-ca-heltec-v4-oled-room-server-merged-20260515.bin) | [meshcore-ca-heltec-v4-oled-room-server-update-20260515.bin](firmware/meshcore-ca-heltec-v4-oled-room-server-update-20260515.bin) |
@@ -103,7 +103,7 @@ Pick your board, role, and flash type to get the right firmware image.
 ## Flashing
 
 1. Pick your board, role, and flash type from the picker above and download the firmware
-2. Flash using the [MeshCore Flasher](https://flasher.meshcore.dev/) or your preferred ESP flashing tool
+2. Flash using the [MeshCore Flasher](https://flasher.meshcore.io/) or your preferred ESP flashing tool
 
 ## CLI Setup
 
@@ -150,32 +150,11 @@ set mqtt2.audience mqtt2.meshcore.ca
 
 ## Verify
 
-Run these commands to confirm everything is set correctly:
-
-```
-get name
-get mqtt.origin
-get mqtt.iata
-get wifi.status
-get mqtt.packets
-get bridge.enabled
-get mqtt.rx
-get mqtt.tx
-get mqtt.status
-get mqtt1.preset
-get mqtt2.preset
-get mqtt3.preset
-```
-
-After a few minutes, confirm your observer appears on:
-
-- [CoreScope Observers](https://mqtt.canadaverse.org/)
-- [CoreScope Packets](https://mqtt.canadaverse.org/)
-- [Canadaverse Map](https://canadaverse.org/meshcore-map.html)
+Once your device is online, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.
 
 ## Useful Links
 
-- [MeshCore Flasher](https://flasher.meshcore.dev/)
+- [MeshCore Flasher](https://flasher.meshcore.io/)
 - [MeshCore Config Tool](https://config.meshcore.dev/)
 - [MeshCore CLI Docs](https://meshcore.dev/docs/cli)
-- [Firmware Manifest](https://canadaverse.org/firmware/manifest.json)
+- [Firmware Manifest](https://live.meshcore.ca/firmware/manifest.json)

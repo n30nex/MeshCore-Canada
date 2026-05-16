@@ -67,8 +67,4 @@ Make sure your IATA region code is set in the integration. The `{IATA}` placehol
 
 ## Verify
 
-After saving, confirm your observer appears on:
-
-- [CoreScope Observers](https://mqtt.canadaverse.org/)
-- [CoreScope Packets](https://mqtt.canadaverse.org/)
-- [Canadaverse Map](https://canadaverse.org/meshcore-map.html)
+After saving, head to [Verify Observer Status](../verify.md) to confirm it's reporting correctly.
