@@ -1,16 +1,6 @@
 # Analyzer & MQTT Packet Broker
 
-MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding telemetry dashboards, maps, and packet inspectors. This section covers the four ways to connect an observer to the MeshCore.ca broker pair.
-
-## MeshCore.ca Brokers
-
-All observer paths connect to the same two brokers for redundancy. Both use JWT token authentication and TLS verification. No username or password is needed.
-
-| | Primary | Backup |
-|---|---------|--------|
-| **Host** | `mqtt1.meshcore.ca` | `mqtt2.meshcore.ca` |
-| **Port** | 443 | 443 |
-| **Transport** | WebSockets (TLS) | WebSockets (TLS) |
+MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding telemetry dashboards, maps, and packet inspectors. Pick one of the four observer paths below to start reporting to the MeshCore.ca network.
 
 ## Choose Your Observer Path
 
@@ -63,6 +53,17 @@ All observer paths connect to the same two brokers for redundancy. Both use JWT 
 After setting up any observer path, head to [Verify Observer Status](verify.md) to confirm it's online and reporting correctly.
 
 ---
+
+## Broker Details
+
+All four paths connect to the same redundant broker pair. No username or password is needed.
+
+| | Primary | Backup |
+|---|---------|--------|
+| **Host** | `mqtt1.meshcore.ca` | `mqtt2.meshcore.ca` |
+| **Port** | 443 | 443 |
+| **Transport** | WebSockets (TLS) | WebSockets (TLS) |
+| **Auth** | JWT token | JWT token |
 
 ## IATA Region Codes
 
