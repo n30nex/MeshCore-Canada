@@ -4,40 +4,106 @@ After setting up your observer using any of the four paths ([MQTT Firmware](buil
 
 ## Check Your Observer
 
-- **[CoreScope Observers](https://live.meshcore.ca/#/observers)** - See all connected observers and their status
-- **[CoreScope Packets](https://live.meshcore.ca/#/packets)** - Watch live packet traffic from observers
-- **[MeshCore Map](https://live.meshcore.ca/#/map)** - See observers on the map
+<div class="grid cards" markdown>
 
-## What to Look For
+-   :material-eye:{ .lg .middle } **CoreScope Observers**
 
-Your observer should appear within a few minutes of coming online. If it doesn't show up:
+    ---
 
-1. **Check WiFi** (firmware path): Make sure the device connected to your 2.4 GHz network. Run `get wifi.status` in the CLI.
-2. **Check MQTT connection** (firmware path): Run `get mqtt.status` to confirm the broker connection is active.
-3. **Check the service** (USB host / PyMC): Make sure the systemd service is running:
-    ```bash
-    sudo systemctl status mctomqtt        # for serial hosts
-    sudo systemctl status meshcore-capture # for companions
-    sudo systemctl status pymc-repeater   # for PyMC
+    See all connected observers and their current status.
+
+    [:octicons-arrow-right-24: View Observers](https://live.meshcore.ca/#/observers)
+
+-   :material-swap-horizontal:{ .lg .middle } **CoreScope Packets**
+
+    ---
+
+    Watch live packet traffic flowing through observers in real time.
+
+    [:octicons-arrow-right-24: View Packets](https://live.meshcore.ca/#/packets)
+
+-   :material-map-marker:{ .lg .middle } **MeshCore Map**
+
+    ---
+
+    See observers and nodes plotted on the map.
+
+    [:octicons-arrow-right-24: View Map](https://live.meshcore.ca/#/map)
+
+</div>
+
+Your observer should appear within a few minutes of coming online.
+
+## Troubleshooting
+
+If your observer doesn't show up, work through these checks based on your setup path.
+
+### MQTT Firmware
+
+Run these in the device's admin CLI:
+
+| Command | What to check |
+|---------|---------------|
+| `get wifi.status` | Should show connected to your 2.4 GHz network |
+| `get mqtt.status` | Should show an active broker connection |
+| `get mqtt.iata` | Should return your 3-character IATA code |
+| `get mqtt1.preset` | Should show `custom` (not `none`) |
+| `get mqtt2.preset` | Should show `custom` (not `none`) |
+| `get name` | Should return the node name you set |
+
+??? note "Full verify command block"
+
+    ```text
+    get name
+    get mqtt.origin
+    get mqtt.iata
+    get wifi.status
+    get mqtt.packets
+    get bridge.enabled
+    get mqtt.rx
+    get mqtt.tx
+    get mqtt.status
+    get mqtt1.preset
+    get mqtt2.preset
+    get mqtt3.preset
     ```
-4. **Check your IATA code**: Confirm it's set correctly. Observers without a valid IATA code may not appear in filtered views.
-5. **Check broker config**: Verify the broker endpoints are `mqtt1.meshcore.ca` and `mqtt2.meshcore.ca` on port `443` with TLS and JWT auth enabled.
 
-## Firmware Verify Commands
+### MCtoMQTT / Companion (USB Host)
 
-If you're running the MQTT firmware, run these commands in the admin CLI to check your full config:
+Check that the systemd service is running:
 
+```bash
+# Serial host
+sudo systemctl status mctomqtt
+
+# Companion
+sudo systemctl status meshcore-capture
 ```
-get name
-get mqtt.origin
-get mqtt.iata
-get wifi.status
-get mqtt.packets
-get bridge.enabled
-get mqtt.rx
-get mqtt.tx
-get mqtt.status
-get mqtt1.preset
-get mqtt2.preset
-get mqtt3.preset
+
+If the service is running but nothing appears, check the config drop-in:
+
+```bash
+# Serial host
+cat /etc/mctomqtt/config.d/20-meshcore-ca.toml
+
+# Companion
+cat ~/.meshcore-packet-capture/.env.local
 ```
+
+Confirm the broker hosts are `mqtt1.meshcore.ca` and `mqtt2.meshcore.ca`.
+
+### PyMC
+
+```bash
+sudo systemctl status pymc-repeater
+```
+
+Check that your `mqtt.iata_code` is set and the broker block is present in `/etc/pymc_repeater/config.yaml`.
+
+### Home Assistant
+
+Go to **Settings** > **Devices & Services** > **MeshCore** > **Configure** > **Manage MQTT Brokers** and confirm both brokers show as connected. Make sure your IATA code is set in the integration.
+
+## Still Not Working?
+
+If everything looks correct but your observer still doesn't appear, double check that your device has internet access and can reach `mqtt1.meshcore.ca` on port 443. Firewalls or network restrictions on outbound WebSocket connections are the most common blocker.
