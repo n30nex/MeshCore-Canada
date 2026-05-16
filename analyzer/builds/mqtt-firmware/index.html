@@ -747,6 +747,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#supported-boards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Boards
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Boards">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#currently-available-hardware-verified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Currently Available (Hardware Verified)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coming-soon-built-pending-hardware-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coming Soon (Built, Pending Hardware Validation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#firmware-downloads" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -791,10 +830,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#broker-slot-configuration" class="md-nav__link">
+  <a href="#broker-slots" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Broker Slot Configuration
+        Broker Slots
       
     </span>
   </a>
@@ -1429,6 +1468,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#supported-boards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Boards
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Boards">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#currently-available-hardware-verified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Currently Available (Hardware Verified)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coming-soon-built-pending-hardware-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coming Soon (Built, Pending Hardware Validation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#firmware-downloads" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1473,10 +1551,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#broker-slot-configuration" class="md-nav__link">
+  <a href="#broker-slots" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Broker Slot Configuration
+        Broker Slots
       
     </span>
   </a>
@@ -1527,30 +1605,41 @@
 
 <h1 id="mqtt-firmware-direct-observer">MQTT Firmware (Direct Observer)<a class="headerlink" href="#mqtt-firmware-direct-observer" title="Permanent link">&para;</a></h1>
 <p>Flash observer firmware directly onto a supported board. The device connects to WiFi and publishes mesh traffic to MQTT brokers without a host computer.</p>
+<p>These firmware images are pre-compiled by <strong>n30nex</strong> and come pre-configured with the MeshCore.ca broker pair (<code>mqtt1.meshcore.ca</code> and <code>mqtt2.meshcore.ca</code>) in slots 1 and 2. After flashing, you only need to set your WiFi credentials, IATA region code, and node name.</p>
+<h2 id="supported-boards">Supported Boards<a class="headerlink" href="#supported-boards" title="Permanent link">&para;</a></h2>
+<p>All boards support both Repeater and Room Server roles.</p>
+<h3 id="currently-available-hardware-verified">Currently Available (Hardware Verified)<a class="headerlink" href="#currently-available-hardware-verified" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Heltec V3</li>
+<li>Heltec V4 OLED</li>
+</ul>
+<h3 id="coming-soon-built-pending-hardware-validation">Coming Soon (Built, Pending Hardware Validation)<a class="headerlink" href="#coming-soon-built-pending-hardware-validation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>LILYGO T3S3 SX1262</li>
+<li>T-Beam Supreme SX1262</li>
+<li>T-Beam SX1262</li>
+<li>Seeed XIAO ESP32S3 + Wio-SX1262</li>
+<li>RAK3112</li>
+<li>Heltec Wireless Tracker</li>
+<li>Heltec Wireless Paper</li>
+</ul>
+<p>New boards will appear in the firmware picker automatically as they are validated and released.</p>
 <h2 id="firmware-downloads">Firmware Downloads<a class="headerlink" href="#firmware-downloads" title="Permanent link">&para;</a></h2>
 <p>Pick your board, role, and flash type to get the right firmware image.</p>
 <div id="fw-picker" style="margin: 1.5em 0;">
-  <div style="display: flex; flex-wrap: wrap; gap: 1em; margin-bottom: 1em;">
+  <div id="fw-loading" style="padding: 1em; opacity: 0.6;">Loading firmware manifest...</div>
+  <div id="fw-selects" style="display: none; flex-wrap: wrap; gap: 1em; margin-bottom: 1em;">
     <div style="flex: 1; min-width: 160px;">
       <label for="fw-board" style="display: block; font-weight: 600; margin-bottom: 0.3em; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7;">Board</label>
-      <select id="fw-board" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;">
-        <option value="heltec-v3">Heltec V3</option>
-        <option value="heltec-v4-oled">Heltec V4 OLED</option>
-      </select>
+      <select id="fw-board" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;"></select>
     </div>
     <div style="flex: 1; min-width: 160px;">
       <label for="fw-role" style="display: block; font-weight: 600; margin-bottom: 0.3em; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7;">Role</label>
-      <select id="fw-role" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;">
-        <option value="repeater">Repeater</option>
-        <option value="room-server">Room Server</option>
-      </select>
+      <select id="fw-role" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;"></select>
     </div>
     <div style="flex: 1; min-width: 160px;">
       <label for="fw-type" style="display: block; font-weight: 600; margin-bottom: 0.3em; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7;">Flash Type</label>
-      <select id="fw-type" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;">
-        <option value="merged">First Flash (Merged)</option>
-        <option value="update">Update</option>
-      </select>
+      <select id="fw-type" style="width: 100%; padding: 0.5em; border-radius: 6px; border: 1px solid var(--md-default-fg-color--lightest); background: var(--md-code-bg-color); color: var(--md-default-fg-color); font-size: 0.95em;"></select>
     </div>
   </div>
   <div id="fw-result" style="padding: 1em 1.2em; border-radius: 8px; border: 2px solid var(--md-accent-fg-color); background: var(--md-code-bg-color);"></div>
@@ -1558,34 +1647,57 @@
 
 <script>
 (function() {
-  var DATE = "20260515";
-  var BASE = "firmware/";
+  var REPO = "MrAlders0n/MeshCore-Canada";
+  var API  = "https://api.github.com/repos/" + REPO + "/releases/latest";
 
-  function boardLabel(val) {
-    return val === "heltec-v3" ? "Heltec V3" : "Heltec V4 OLED";
-  }
-  function roleLabel(val) {
-    return val === "repeater" ? "Repeater" : "Room Server";
-  }
-  function typeLabel(val) {
-    return val === "merged" ? "First Flash (Merged)" : "Update";
+  var manifest = null;
+  var assets   = {};
+
+  function populateSelect(id, items) {
+    var el = document.getElementById(id);
+    el.innerHTML = items.map(function(item) {
+      return '<option value="' + item.id + '">' + item.label + '</option>';
+    }).join("");
   }
 
-  function update() {
+  function findArtifact() {
+    if (!manifest) return null;
     var board = document.getElementById("fw-board").value;
     var role  = document.getElementById("fw-role").value;
     var type  = document.getElementById("fw-type").value;
-    var file  = "meshcore-ca-" + board + "-" + role + "-" + type + "-" + DATE + ".bin";
-    var href  = BASE + file;
+    return manifest.artifacts.find(function(a) {
+      return a.board === board && a.role === role && a.type === type;
+    });
+  }
 
-    document.getElementById("fw-result").innerHTML =
+  function update() {
+    var artifact = findArtifact();
+    var result   = document.getElementById("fw-result");
+
+    if (!artifact) {
+      result.innerHTML = '<span style="opacity: 0.5;">No firmware available for this combination.</span>';
+      return;
+    }
+
+    var file = artifact.file;
+    var href = assets[file] || "#";
+    var boardEl = document.getElementById("fw-board");
+    var roleEl  = document.getElementById("fw-role");
+    var typeEl  = document.getElementById("fw-type");
+    var boardLabel = boardEl.options[boardEl.selectedIndex].text;
+    var roleLabel  = roleEl.options[roleEl.selectedIndex].text;
+    var typeLabel  = typeEl.options[typeEl.selectedIndex].text;
+
+    result.innerHTML =
       '<div style="margin-bottom: 0.6em;">' +
-        '<strong>' + boardLabel(board) + '</strong> &middot; ' +
-        roleLabel(role) + ' &middot; ' + typeLabel(type) +
+        '<strong>' + boardLabel + '</strong> &middot; ' +
+        roleLabel + ' &middot; ' + typeLabel +
       '</div>' +
-      '<div style="font-family: var(--md-code-font-family); font-size: 0.85em; opacity: 0.7; margin-bottom: 0.8em;">' +
+      '<div style="font-family: var(--md-code-font-family); font-size: 0.85em; opacity: 0.7; margin-bottom: 0.4em;">' +
         file +
       '</div>' +
+      '<div style="font-size: 0.8em; opacity: 0.5; margin-bottom: 0.8em;">Build: ' +
+        manifest.version + ' (' + manifest.date + ')</div>' +
       '<a href="' + href + '" download ' +
         'style="display: inline-block; padding: 0.6em 1.5em; border-radius: 6px; ' +
         'background: var(--md-accent-fg-color); color: var(--md-accent-bg-color); ' +
@@ -1593,64 +1705,54 @@
         '⬇ Download Firmware</a>';
   }
 
-  document.getElementById("fw-board").addEventListener("change", update);
-  document.getElementById("fw-role").addEventListener("change", update);
-  document.getElementById("fw-type").addEventListener("change", update);
-  update();
+  function init(release) {
+    (release.assets || []).forEach(function(asset) {
+      assets[asset.name] = asset.browser_download_url;
+    });
+
+    var manifestAsset = release.assets.find(function(a) {
+      return a.name === "manifest.json";
+    });
+    if (!manifestAsset) {
+      document.getElementById("fw-loading").textContent = "No firmware manifest found in latest release.";
+      return;
+    }
+
+    fetch(manifestAsset.browser_download_url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        manifest = data;
+        populateSelect("fw-board", manifest.boards);
+        populateSelect("fw-role", manifest.roles);
+        populateSelect("fw-type", manifest.types);
+        document.getElementById("fw-loading").style.display = "none";
+        document.getElementById("fw-selects").style.display = "flex";
+        document.getElementById("fw-board").addEventListener("change", update);
+        document.getElementById("fw-role").addEventListener("change", update);
+        document.getElementById("fw-type").addEventListener("change", update);
+        update();
+      })
+      .catch(function() {
+        document.getElementById("fw-loading").textContent = "Failed to load firmware manifest.";
+      });
+  }
+
+  fetch(API)
+    .then(function(r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    })
+    .then(init)
+    .catch(function() {
+      document.getElementById("fw-loading").innerHTML =
+        'Could not load firmware list. <a href="https://github.com/' + REPO + '/releases/latest">Download from GitHub Releases</a>.';
+    });
 })();
 </script>
 
-<details class="note">
-<summary>All firmware files</summary>
-<p>Naming convention: <code>meshcore-ca-{board}-{role}-{type}-{date}.bin</code></p>
-<p><strong>Heltec V3</strong></p>
-<table>
-<thead>
-<tr>
-<th>Role</th>
-<th>Merged (First Flash)</th>
-<th>Update (Update)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Repeater</td>
-<td><a href="../firmware/meshcore-ca-heltec-v3-repeater-merged-20260515.bin">meshcore-ca-heltec-v3-repeater-merged-20260515.bin</a></td>
-<td><a href="../firmware/meshcore-ca-heltec-v3-repeater-update-20260515.bin">meshcore-ca-heltec-v3-repeater-update-20260515.bin</a></td>
-</tr>
-<tr>
-<td>Room Server</td>
-<td><a href="../firmware/meshcore-ca-heltec-v3-room-server-merged-20260515.bin">meshcore-ca-heltec-v3-room-server-merged-20260515.bin</a></td>
-<td><a href="../firmware/meshcore-ca-heltec-v3-room-server-update-20260515.bin">meshcore-ca-heltec-v3-room-server-update-20260515.bin</a></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Heltec V4 OLED</strong></p>
-<table>
-<thead>
-<tr>
-<th>Role</th>
-<th>Merged (First Flash)</th>
-<th>Update (Update)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Repeater</td>
-<td><a href="../firmware/meshcore-ca-heltec-v4-oled-repeater-merged-20260515.bin">meshcore-ca-heltec-v4-oled-repeater-merged-20260515.bin</a></td>
-<td><a href="../firmware/meshcore-ca-heltec-v4-oled-repeater-update-20260515.bin">meshcore-ca-heltec-v4-oled-repeater-update-20260515.bin</a></td>
-</tr>
-<tr>
-<td>Room Server</td>
-<td><a href="../firmware/meshcore-ca-heltec-v4-oled-room-server-merged-20260515.bin">meshcore-ca-heltec-v4-oled-room-server-merged-20260515.bin</a></td>
-<td><a href="../firmware/meshcore-ca-heltec-v4-oled-room-server-update-20260515.bin">meshcore-ca-heltec-v4-oled-room-server-update-20260515.bin</a></td>
-</tr>
-</tbody>
-</table>
-</details>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
-<li>A supported LoRa board (Heltec V3 or Heltec V4 OLED)</li>
+<li>A supported LoRa board (see list above)</li>
 <li>2.4 GHz WiFi network credentials</li>
 <li>Your 3-character IATA region code (e.g. <code>YOW</code> for Ottawa, <code>YYZ</code> for Toronto)</li>
 </ul>
@@ -1660,7 +1762,7 @@
 <li>Flash using the <a href="https://flasher.meshcore.io/">MeshCore Flasher</a> or your preferred ESP flashing tool</li>
 </ol>
 <h2 id="cli-setup">CLI Setup<a class="headerlink" href="#cli-setup" title="Permanent link">&para;</a></h2>
-<p>After flashing, connect to the device's admin CLI (serial or web) and run the following setup commands. Replace <code>YOW</code> with your region code and fill in your WiFi credentials:</p>
+<p>After flashing, connect to the device's admin CLI (serial or web) to set your WiFi, region code, and node name. Replace <code>YOW</code> with your IATA code and fill in your network credentials:</p>
 <div class="highlight"><pre><span></span><code>set name YOW-Repeater-01
 set mqtt.iata YOW
 set wifi.ssid YourWiFiNetwork
@@ -1678,8 +1780,10 @@ reboot
 <p class="admonition-title">Room Servers</p>
 <p>For room server roles, change the name (e.g. <code>YOW-Room-Server-01</code>) and omit <code>set repeat on</code>.</p>
 </div>
-<h2 id="broker-slot-configuration">Broker Slot Configuration<a class="headerlink" href="#broker-slot-configuration" title="Permanent link">&para;</a></h2>
-<p>After the initial setup, configure broker slots to point at the MeshCore.ca MQTT pair. Clear all six slots first, then assign:</p>
+<h2 id="broker-slots">Broker Slots<a class="headerlink" href="#broker-slots" title="Permanent link">&para;</a></h2>
+<p>These firmware images ship pre-configured with <code>mqtt1.meshcore.ca</code> and <code>mqtt2.meshcore.ca</code> in slots 1 and 2. No action needed unless your slots were cleared or overwritten.</p>
+<details class="note">
+<summary>Restore broker slots manually</summary>
 <div class="highlight"><pre><span></span><code>set mqtt1.preset none
 set mqtt2.preset none
 set mqtt3.preset none
@@ -1687,14 +1791,15 @@ set mqtt4.preset none
 set mqtt5.preset none
 set mqtt6.preset none
 set mqtt1.preset custom
-set mqtt1.server wss://mqtt1.meshcore.ca:443
+set mqtt1.server wss://mqtt1.meshcore.ca:443/mqtt
 set mqtt1.port 443
 set mqtt1.audience mqtt1.meshcore.ca
 set mqtt2.preset custom
-set mqtt2.server wss://mqtt2.meshcore.ca:443
+set mqtt2.server wss://mqtt2.meshcore.ca:443/mqtt
 set mqtt2.port 443
 set mqtt2.audience mqtt2.meshcore.ca
 </code></pre></div>
+</details>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
 <p>Once your device is online, head to <a href="../../verify/">Verify Observer Status</a> to confirm it's reporting correctly.</p>
 <h2 id="useful-links">Useful Links<a class="headerlink" href="#useful-links" title="Permanent link">&para;</a></h2>
@@ -1702,7 +1807,6 @@ set mqtt2.audience mqtt2.meshcore.ca
 <li><a href="https://flasher.meshcore.io/">MeshCore Flasher</a></li>
 <li><a href="https://config.meshcore.dev/">MeshCore Config Tool</a></li>
 <li><a href="https://meshcore.dev/docs/cli">MeshCore CLI Docs</a></li>
-<li><a href="https://live.meshcore.ca/firmware/manifest.json">Firmware Manifest</a></li>
 </ul>
 
 
