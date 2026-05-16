@@ -179,12 +179,21 @@ set mqtt.packets on
 set bridge.enabled on
 set mqtt.rx on
 set mqtt.tx advert
-set repeat on
 reboot
 ```
 
 !!! note "Room Servers"
-    For room server roles, change the name (e.g. `YOW-Room-Server-01`) and omit `set repeat on`.
+    For room server roles, change the name to match (e.g. `YOW-Room-Server-01`).
+
+## Packet Repeating
+
+By default, the device will repeat packets for other nodes on the mesh in addition to observing. If that's what you want, no changes needed.
+
+If you already have a repeater nearby (e.g. one on your roof) and this device should only observe without repeating traffic, disable it:
+
+```text
+set repeat off
+```
 
 ## Broker Slots
 
