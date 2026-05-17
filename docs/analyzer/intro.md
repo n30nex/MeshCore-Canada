@@ -2,6 +2,11 @@
 
 MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding telemetry dashboards, maps, and packet inspectors. Pick one of the four observer paths below to start reporting to the MeshCore.ca network.
 
+!!! tip "Observer setup checklist"
+    Every observer path needs the same basics: a real 3-letter IATA airport code, the MeshCore.ca broker pair, JWT token authentication, TLS on port `443`, and packet publishing enabled. If the setup screen has two broker entries, use the same IATA code on both entries.
+
+    For Home Assistant, packet publishing means **Payload Mode** = `packet` or the older **Packets (Lets Mesh)** option enabled. For firmware, run the full CLI command block in the firmware guide so `mqtt.packets`, `bridge.enabled`, `mqtt.rx`, and `mqtt.tx` are set.
+
 ## Choose Your Observer Path
 
 <div class="grid cards" markdown>
@@ -74,7 +79,13 @@ MeshCore observers capture mesh traffic and publish it to MQTT brokers, feeding 
 
 ## IATA Region Codes
 
-Each observer identifies its region with a 3-character IATA code. Use the airport code nearest to your location. The following codes are supported on [live.meshcore.ca](https://live.meshcore.ca) today.
+Each observer identifies its region with a real 3-letter IATA airport code. Use the airport code nearest to your location.
+
+The firmware and helper scripts are not limited to the list below. If your nearest real IATA code is missing here, you can still use it and the public broker will accept it as long as it is a valid airport code. The live site will add observed regions to the picker automatically, but codes missing from the friendly-name list may appear as the bare code until we add a label.
+
+Do not use placeholders or made-up region names such as `XXX` or `HOME`. Do not use `CAN` as shorthand for Canada; it is a real airport code for Guangzhou and will tag your observer to the wrong region.
+
+The following Canadian codes are listed for quick selection today. Host-side helper scripts show this same list interactively when you omit `--iata`.
 
 ??? note "Ontario"
 
@@ -96,6 +107,7 @@ Each observer identifies its region with a 3-character IATA code. Use the airpor
     | YYB | North Bay |
     | YGK | Kingston |
     | YPQ | Peterborough |
+    | YTR | Trenton / Quinte West |
     | YHD | Dryden |
     | YPL | Pickle Lake |
     | YND | Gatineau (Ottawa area) |
