@@ -261,10 +261,28 @@ The script can send the commands over USB serial on Linux or macOS, or print a c
 bash <(curl -fsSL https://meshcore.ca/analyzer/scripts/setup-mqtt-firmware.sh) --port /dev/ttyUSB0
 ```
 
+On Windows, use the PowerShell helper:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (iwr -UseBasicParsing https://meshcore.ca/analyzer/scripts/setup-mqtt-firmware.ps1).Content"
+```
+
+If you already know the COM port, pass it directly:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((iwr -UseBasicParsing https://meshcore.ca/analyzer/scripts/setup-mqtt-firmware.ps1).Content)) -Port COM3"
+```
+
 To generate commands without touching a serial port:
 
 ```bash
 bash <(curl -fsSL https://meshcore.ca/analyzer/scripts/setup-mqtt-firmware.sh) --print-only
+```
+
+Windows print-only mode:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((iwr -UseBasicParsing https://meshcore.ca/analyzer/scripts/setup-mqtt-firmware.ps1).Content)) -PrintOnly"
 ```
 
 ### Manual CLI Setup
