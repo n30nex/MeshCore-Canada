@@ -3,7 +3,7 @@
 Flash observer firmware directly onto a supported board. The device connects to WiFi and publishes mesh traffic to MQTT brokers without a host computer.
 
 !!! info "Pre-configured firmware"
-    These firmware images are pre-compiled by **n30nex** and come pre-configured with the MeshCore.ca broker pair (`mqtt1.meshcore.ca` and `mqtt2.meshcore.ca`) in slots 1 and 2. After flashing, run the CLI setup block below to set WiFi, IATA, node name, and packet publishing.
+    The 2026-05-21 and newer images are pre-compiled by **n30nex** and come pre-configured with the MeshCore.ca broker pair (`mqtt1.meshcore.ca` and `mqtt2.meshcore.ca`) in slots 1 and 2, plus the USA/Canada radio defaults (`910.525 MHz / 62.5 kHz / SF7 / CR5`). After flashing, run the CLI setup block below to set WiFi, IATA, node name, path hash mode, and packet publishing.
 
 ## Supported Boards
 
@@ -24,7 +24,6 @@ All boards support both Repeater and Room Server roles.
     | T-Beam Supreme SX1262 | Build verified, smoke test recommended |
     | T-Beam SX1262 | Build verified, smoke test recommended |
     | Seeed XIAO ESP32S3 + Wio-SX1262 | Build verified, smoke test recommended |
-    | RAK3112 | Build verified, smoke test recommended |
 
 === "Coming Soon (Pending Build)"
 
@@ -206,7 +205,7 @@ Most users should choose **First Flash (Merged)**, download the file, then flash
 | Board | A supported LoRa board (see list above) |
 | WiFi | 2.4 GHz network credentials |
 | IATA Code | Your real 3-letter IATA airport code (e.g. `YOW` for Ottawa) |
-| Radio preset | USA/Canada recommended settings: `910.525 MHz / 62.5 kHz / SF7 / CR5` |
+| Radio preset | Built into 2026-05-21+ firmware: USA/Canada recommended settings, `910.525 MHz / 62.5 kHz / SF7 / CR5` |
 | Path hash mode | 3-byte path hashes: `set path.hash.mode 2` |
 
 ## Flashing
@@ -231,7 +230,6 @@ After flashing, connect to the device's admin CLI (serial or web) to set your Wi
 
 ```text
 set name YOW-Repeater-01
-set radio 910.525,62.5,7,5
 set path.hash.mode 2
 set mqtt.iata YOW
 set wifi.ssid YourWiFiNetwork
@@ -252,7 +250,7 @@ reboot
     For room server roles, change the name to match (e.g. `YOW-Room-Server-01`).
 
 !!! tip "MeshCore Canada network settings"
-    `set radio 910.525,62.5,7,5` matches the **USA/Canada (Recommended)** preset used by MeshCore Canada communities. `set path.hash.mode 2` selects 3-byte path hashes, which is the recommended setting for repeater-backed MeshCore Canada networks. Run these during onboarding even if the firmware image was just flashed, so the device is known-good before it is placed in service.
+    Fresh 2026-05-21 and newer direct MQTT firmware images already default to the **USA/Canada (Recommended)** radio preset used by MeshCore Canada communities. `set path.hash.mode 2` is still required during onboarding because it selects 3-byte path hashes for repeater-backed MeshCore Canada networks. If you are updating an older image, reusing a device with retained preferences, or verifying a device before remote installation, run `set radio 910.525,62.5,7,5` as well.
 
 ## Packet Repeating
 

@@ -22,7 +22,7 @@ MeshCore devices must match the local mesh's radio settings before they can join
     A device on another regional preset may appear to be configured correctly but will not hear the MeshCore Canada network. Pick **USA/Canada (Recommended)** in apps or config tools. If the tool only exposes raw radio fields, use `910.525 MHz`, `62.5 kHz`, `SF7`, and `CR5`.
 
 !!! note "Why 3-byte path hashes?"
-    MeshCore Canada recommends 3-byte path hashes for better behavior on larger repeater-backed networks. Companion devices often need this changed manually. Repeaters and room servers flashed with MeshCore.ca firmware should also be checked during onboarding.
+    MeshCore Canada recommends 3-byte path hashes for better behavior on larger repeater-backed networks. Companion devices often need this changed manually. Repeaters and room servers flashed with 2026-05-21 or newer MeshCore.ca direct MQTT firmware already default to the USA/Canada radio preset, but path hash mode should still be set during onboarding.
 
 ## Step 2: Get Your Hardware
 
@@ -37,12 +37,13 @@ Choose a role:
 
 Flash firmware for the role you need, then apply the MeshCore Canada network settings before judging whether the device works.
 
-For repeaters and room servers using the MeshCore.ca observer firmware, include these first-run CLI settings:
+For repeaters and room servers using 2026-05-21 or newer MeshCore.ca direct MQTT firmware, include this first-run CLI setting:
 
 ```text
-set radio 910.525,62.5,7,5
 set path.hash.mode 2
 ```
+
+If you are updating an older image, reusing a device with retained preferences, or configuring generic firmware through the CLI, also run `set radio 910.525,62.5,7,5`.
 
 For companion devices, set the radio preset to **USA/Canada (Recommended)** and set path hash mode to **3-byte** in the companion app or config tool. If you are configuring a companion through a CLI that supports MeshCore settings, use:
 

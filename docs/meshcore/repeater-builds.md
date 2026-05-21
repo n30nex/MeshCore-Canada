@@ -15,16 +15,15 @@ Before placing a repeater, configure it for the MeshCore Canada network:
 | Raw radio values | `910.525 MHz / 62.5 kHz / SF7 / CR5` |
 | Path hash mode | `3-byte` |
 
-For repeaters or room servers configured through the MeshCore CLI, run:
+For repeaters or room servers flashed with 2026-05-21 or newer MeshCore.ca direct MQTT firmware, run:
 
 ```text
-set radio 910.525,62.5,7,5
 set path.hash.mode 2
 reboot
 ```
 
 !!! note "Fresh MeshCore.ca firmware flashes"
-    New users flashing MeshCore.ca repeater firmware should still run the onboarding settings above. This confirms the repeater is on the USA/Canada radio preset and uses 3-byte path hashes before it is installed on a roof, mast, or remote site.
+    The 2026-05-21 and newer MeshCore.ca direct MQTT firmware images already default to the USA/Canada radio preset. If you are updating an older image, reusing a device with retained preferences, or configuring generic firmware, also run `set radio 910.525,62.5,7,5` before installing the repeater on a roof, mast, or remote site.
 
 ## Indoor Repeater
 

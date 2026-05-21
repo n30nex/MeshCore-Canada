@@ -15,16 +15,15 @@ A repeater extends local mesh coverage by hearing packets and forwarding them fo
 | Raw radio values | `910.525 MHz / 62.5 kHz / SF7 / CR5` |
 | Path hash mode | `3-byte` |
 
-For repeaters with MeshCore CLI access:
+For repeaters flashed with 2026-05-21 or newer MeshCore.ca direct MQTT firmware:
 
 ```text
-set radio 910.525,62.5,7,5
 set path.hash.mode 2
 reboot
 ```
 
 !!! warning "Check before installation"
-    A repeater installed with the wrong regional preset or path hash mode can look healthy locally but still fail to participate in the MeshCore Canada network. Confirm these settings before mounting it somewhere hard to reach.
+    A repeater installed with the wrong regional preset or path hash mode can look healthy locally but still fail to participate in the MeshCore Canada network. Fresh 2026-05-21 and newer MeshCore.ca direct MQTT firmware already defaults to the USA/Canada radio preset, but older images, retained preferences, and generic firmware should be verified with `set radio 910.525,62.5,7,5` before mounting the device somewhere hard to reach.
 
 ## Recommended Devices
 
