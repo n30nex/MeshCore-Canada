@@ -39,7 +39,7 @@ Whether you're brand new to mesh networking or looking to deploy repeaters acros
 
     Find a MeshCore community near you. Browse by province to discover local networks, frequencies, and contacts.
 
-    [:octicons-arrow-right-24: Find Your Province](provinces/ontario.md)
+    [:octicons-arrow-right-24: Find Your Province](provinces/index.md)
 
 -   :material-bookshelf:{ .lg .middle } **Resources**
 

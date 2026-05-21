@@ -49,6 +49,7 @@ nav:
           - MQTT Firmware: analyzer/builds/mqtt-firmware.md
           - PyMC: analyzer/builds/pymc.md
   - Mesh Directory:
+      - Overview: provinces/index.md
       - British Columbia: provinces/british-columbia.md
       - Alberta: provinces/alberta.md
       - Saskatchewan: provinces/saskatchewan.md
