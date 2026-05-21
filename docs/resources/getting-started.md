@@ -55,7 +55,7 @@ After changing radio parameters, reboot the device.
 
 ## Step 4: Find or Start a Community
 
-Browse the [Mesh Directory](../provinces/ontario.md) and check your province or nearby region. If a local community documents a different preset, follow the local community setting for that mesh.
+Browse the [Mesh Directory](../provinces/index.md) and check your province or nearby region. If a local community documents a different preset, follow the local community setting for that mesh.
 
 ## Step 5: Get on the Air
 
