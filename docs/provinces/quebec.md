@@ -28,7 +28,7 @@ If you know of a community that is missing or needs an update, open an update re
 | Path hash mode | `3-byte` |
 | Website | <https://www.montrealmesh.ca> |
 
-### Reseau Mesh de la Capitale YQB
+### Réseau Mesh de la Capitale YQB
 
 | Field | Value |
 |-------|-------|
@@ -39,7 +39,7 @@ If you know of a community that is missing or needs an update, open an update re
 | Path hash mode | `3-byte` |
 | Discord | <https://discord.com/channels/1497584274520412223> |
 
-### Reseau Libre
+### Réseau Libre
 
 | Field | Value |
 |-------|-------|
