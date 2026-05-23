@@ -4,6 +4,10 @@ hide:
 ---
 # MeshCore Canada
 
+<div class="home-discord-link" markdown>
+[:fontawesome-brands-discord:](https://discord.gg/BESFVMt7yk){ .discord-logo-link aria-label="Join the MeshCore Canada Discord" title="Join the MeshCore Canada Discord" target="_blank" rel="noopener" }
+</div>
+
 !!! warning "Community Project"
     **meshcore.ca** is an independent community site. We're not affiliated with, endorsed by, or officially connected to the MeshCore or MeshOS projects. We're just a group of Canadians helping other Canadians organize their local meshes and build useful tools for the community.
 
