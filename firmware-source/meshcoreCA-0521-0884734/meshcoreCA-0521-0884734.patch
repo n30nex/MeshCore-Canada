@@ -1,0 +1,642 @@
+diff --git a/MQTT_IMPLEMENTATION.md b/MQTT_IMPLEMENTATION.md
+index c562179df8cbbf082419e50e9f1b0cad5b8d5adf..d6d949f1765628e839f8cab363ccbf876bc3814d 100644
+--- a/MQTT_IMPLEMENTATION.md
++++ b/MQTT_IMPLEMENTATION.md
+@@ -77,7 +77,7 @@ get mqtt.status
+ 
+ The MQTT bridge implementation provides:
+ - Up to 6 MQTT connection slots with built-in presets
+-- Built-in presets for LetsMesh Analyzer (US/EU), MeshMapper, MeshRank, Waev, Meshomatic, CascadiaMesh, EastIdahoMesh, ColoradoMesh, and TennMesh
++- Built-in presets for LetsMesh Analyzer (US/EU), MeshMapper, Canadaverse, MeshRank, Waev, Meshomatic, CascadiaMesh, EastIdahoMesh, ColoradoMesh, and TennMesh
+ - Custom broker support with username/password authentication
+ - JWT (Ed25519 device signing) authentication for most preset brokers; TennMesh uses a fixed username/password (plain MQTT)
+ - WSS (WebSocket Secure), direct MQTT/TLS, and plain MQTT (TennMesh) transport
+@@ -99,6 +99,7 @@ The MQTT bridge uses a slot-based architecture with up to 6 concurrent connectio
+ | `analyzer-us` | mqtt-us-v1.letsmesh.net:443 | JWT (Ed25519) | WSS |
+ | `analyzer-eu` | mqtt-eu-v1.letsmesh.net:443 | JWT (Ed25519) | WSS |
+ | `meshmapper` | mqtt.meshmapper.cc:443 | JWT (Ed25519) | WSS |
++| `canadaverse` | mqtt.canadaverse.org:443 | JWT (Ed25519) | WSS |
+ | `meshrank` | meshrank.net:8883 | None (token in topic) | MQTT over TLS |
+ | `waev` | mqtt.waev.app:443 | JWT (Ed25519) | WSS |
+ | `meshomatic` | us-east.meshomatic.net:443 | JWT (Ed25519) | WSS |
+@@ -117,12 +118,23 @@ The MQTT bridge uses a slot-based architecture with up to 6 concurrent connectio
+ - Slot 2: `analyzer-eu`
+ - Slots 3-6: `none`
+ 
++Canadaverse observer builds override those defaults:
++- Heltec V3 observer builds: Slot 1 `canadaverse`, Slots 2-6 `none`
++- Heltec V4 OLED observer builds: Slot 1 `analyzer-us`, Slot 2 `meshmapper`, Slot 3 `canadaverse`
++- RAK 3112 observer builds: Slot 1 `canadaverse`, Slots 2-6 `none`
++
+ **Memory Limits:**
+ - With PSRAM: All slots can be active simultaneously
+-- Without PSRAM: Maximum 2 active TLS/WSS slots (each WSS/TLS connection requires ~40KB internal heap)
++- Without PSRAM: Maximum 2 active TLS/WSS slots by default, or less when the build defines `MAX_MQTT_BROKERS`
++- Public no-PSRAM Canadaverse observer builds set `MAX_MQTT_BROKERS=2` so `mqtt1.meshcore.ca` and `mqtt2.meshcore.ca` can both be active
+ - If more slots are configured than the device supports, excess slots show as `(inactive)` in `get mqtt.status`
+ - Slot configurations are preserved in preferences — moving firmware to a PSRAM device activates all slots
+ 
++**MeshCore.ca consolidation builds:**
++- Consolidated broker builds can define `MESHCORE_CA_DEFAULTS=1`
++- Older staged builds may use the legacy `FUTURE_MESHCORE_CA_DEFAULTS=1` flag
++- Those builds default slot 1 to `mqtt1.meshcore.ca:443/mqtt` and slot 2 to `mqtt2.meshcore.ca:443/mqtt` as `custom` JWT slots, leaving all other slots disabled
++
+ ### Files
+ 
+ #### Core Implementation
+@@ -246,6 +258,7 @@ Each slot (1-6) supports the following commands:
+ - `set mqttN.preset analyzer-us` - Set slot N to LetsMesh Analyzer US
+ - `set mqttN.preset analyzer-eu` - Set slot N to LetsMesh Analyzer EU
+ - `set mqttN.preset meshmapper` - Set slot N to MeshMapper
++- `set mqttN.preset canadaverse` - Set slot N to Canadaverse
+ - `set mqttN.preset meshrank` - Set slot N to MeshRank (requires token)
+ - `set mqttN.preset waev` - Set slot N to Waev
+ - `set mqttN.preset meshomatic` - Set slot N to Meshomatic
+@@ -627,9 +640,9 @@ set repeat off
+ 
+ ### Step 6: Verify Slot Configuration
+ ```
+-get mqtt1.preset    # Should show: analyzer-us
+-get mqtt2.preset    # Should show: analyzer-eu
+-get mqtt3.preset    # Should show: none
++get mqtt1.preset    # Generic/V4: analyzer-us; Canadaverse V3/RAK: canadaverse
++get mqtt2.preset    # Generic build: analyzer-eu; Canadaverse V3/RAK: none; Canadaverse V4: meshmapper
++get mqtt3.preset    # Generic/V3/RAK: none; Canadaverse V4: canadaverse
+ ```
+ 
+ ### Step 7: (Optional) Add Additional Presets
+diff --git a/platformio.ini b/platformio.ini
+index b079cec9393a50fea2881c34f2caa373dec31eab..a9d1f8425075b4490d30c2489e2d72b73dfad5c3 100644
+--- a/platformio.ini
++++ b/platformio.ini
+@@ -90,9 +90,14 @@ build_flags = ${arduino_base.build_flags}
+   -D NRF52_PLATFORM
+   -D LFS_NO_ASSERT=1
+   -D EXTRAFS=1
++build_src_filter = ${arduino_base.build_src_filter}
++  -<helpers/JWTHelper.cpp>
++  -<helpers/MQTTMessageBuilder.cpp>
+ lib_deps =
+   ${arduino_base.lib_deps}
+   https://github.com/oltaco/CustomLFS#0.2.1
++lib_ignore =
++  PsychicMqttClient
+ ; ----------------- RP2040 ---------------------
+ 
+ [rp2040_base]
+diff --git a/src/helpers/CommonCLI.cpp b/src/helpers/CommonCLI.cpp
+index 39ef6eb8fb0cde84c7da7271558ac751db556831..b758936e2adb26a0019ed90749c6e0f012ff5114 100644
+--- a/src/helpers/CommonCLI.cpp
++++ b/src/helpers/CommonCLI.cpp
+@@ -423,14 +423,72 @@ static void setMQTTPrefsDefaults(MQTTPrefs* prefs) {
+   prefs->mqtt_tx_enabled = 2;        // advert: own adverts only, by default
+   prefs->mqtt_rx_enabled = 1;        // RX packets enabled by default
+   prefs->mqtt_status_interval = 300000; // 5 minutes default
+-  // Slot presets: analyzer-us and analyzer-eu enabled by default, rest = none
+-  strncpy(prefs->mqtt_slot_preset[0], "analyzer-us", sizeof(prefs->mqtt_slot_preset[0]) - 1);
+-  prefs->mqtt_slot_preset[0][sizeof(prefs->mqtt_slot_preset[0]) - 1] = '\0';
+-  strncpy(prefs->mqtt_slot_preset[1], "analyzer-eu", sizeof(prefs->mqtt_slot_preset[1]) - 1);
+-  prefs->mqtt_slot_preset[1][sizeof(prefs->mqtt_slot_preset[1]) - 1] = '\0';
+-  for (int i = 2; i < MAX_MQTT_SLOTS; i++) {
+-    strncpy(prefs->mqtt_slot_preset[i], "none", sizeof(prefs->mqtt_slot_preset[i]) - 1);
++  // Slot presets: build variants can override defaults. MeshCore.ca public builds
++  // use two custom WSS brokers while storing scheme-less host/path strings.
++#if defined(MESHCORE_CA_DEFAULTS) || defined(FUTURE_MESHCORE_CA_DEFAULTS)
++  const char* default_slots[MAX_MQTT_SLOTS] = {"custom", "custom", "none", "none", "none", "none"};
++  const char* default_hosts[MAX_MQTT_SLOTS] = {
++    "mqtt1.meshcore.ca:443/mqtt",
++    "mqtt2.meshcore.ca:443/mqtt",
++    "", "", "", ""
++  };
++  const uint16_t default_ports[MAX_MQTT_SLOTS] = {443, 443, 0, 0, 0, 0};
++  const char* default_audiences[MAX_MQTT_SLOTS] = {
++    "mqtt1.meshcore.ca",
++    "mqtt2.meshcore.ca",
++    "", "", "", ""
++  };
++#elif defined(HELTEC_WSL3_FOUR_BROKER_DEFAULTS)
++  const char* default_slots[MAX_MQTT_SLOTS] = {"custom", "custom", "cascadiamesh", "custom", "none", "none"};
++  const char* default_hosts[MAX_MQTT_SLOTS] = {
++    "mqtt1.meshcore.ca:443/mqtt",
++    "mqtt2.meshcore.ca:443/mqtt",
++    "",
++    "analyzer.ve7kod.ca:443/mqtt",
++    "", ""
++  };
++  const uint16_t default_ports[MAX_MQTT_SLOTS] = {443, 443, 0, 443, 0, 0};
++  const char* default_audiences[MAX_MQTT_SLOTS] = {
++    "mqtt1.meshcore.ca",
++    "mqtt2.meshcore.ca",
++    "",
++    "analyzer.ve7kod.ca",
++    "", ""
++  };
++#else
++#ifdef DEFAULT_MQTT_SLOT0_PRESET
++  const char* default_slot0 = DEFAULT_MQTT_SLOT0_PRESET;
++#else
++  const char* default_slot0 = "analyzer-us";
++#endif
++#ifdef DEFAULT_MQTT_SLOT1_PRESET
++  const char* default_slot1 = DEFAULT_MQTT_SLOT1_PRESET;
++#else
++  const char* default_slot1 = "analyzer-eu";
++#endif
++#ifdef DEFAULT_MQTT_SLOT2_PRESET
++  const char* default_slot2 = DEFAULT_MQTT_SLOT2_PRESET;
++#else
++  const char* default_slot2 = "none";
++#endif
++  const char* default_slots[MAX_MQTT_SLOTS] = {default_slot0, default_slot1, default_slot2, "none", "none", "none"};
++  const char* default_hosts[MAX_MQTT_SLOTS] = {"", "", "", "", "", ""};
++  const uint16_t default_ports[MAX_MQTT_SLOTS] = {0, 0, 0, 0, 0, 0};
++  const char* default_audiences[MAX_MQTT_SLOTS] = {"", "", "", "", "", ""};
++#endif
++
++  for (int i = 0; i < MAX_MQTT_SLOTS; i++) {
++    strncpy(prefs->mqtt_slot_preset[i], default_slots[i], sizeof(prefs->mqtt_slot_preset[i]) - 1);
+     prefs->mqtt_slot_preset[i][sizeof(prefs->mqtt_slot_preset[i]) - 1] = '\0';
++    if (default_hosts[i][0] != '\0') {
++      strncpy(prefs->mqtt_slot_host[i], default_hosts[i], sizeof(prefs->mqtt_slot_host[i]) - 1);
++      prefs->mqtt_slot_host[i][sizeof(prefs->mqtt_slot_host[i]) - 1] = '\0';
++    }
++    prefs->mqtt_slot_port[i] = default_ports[i];
++    if (default_audiences[i][0] != '\0') {
++      strncpy(prefs->mqtt_slot_audience[i], default_audiences[i], sizeof(prefs->mqtt_slot_audience[i]) - 1);
++      prefs->mqtt_slot_audience[i][sizeof(prefs->mqtt_slot_audience[i]) - 1] = '\0';
++    }
+   }
+   prefs->wifi_power_save = 1; // Default to none (0=min, 1=none, 2=max)
+   // String fields are already zero-initialized by memset
+@@ -707,6 +765,7 @@ void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* re
+         strcpy(reply, "ERR: clock cannot go backwards");
+       }
+     } else if (memcmp(command, "memory", 6) == 0) {
++#ifdef ESP_PLATFORM
+       sprintf(reply, "Free: %d, Min: %d, Max: %d, Queue: %d, IntFree: %d, IntMax: %d, PSRAM: %d/%d",
+               ESP.getFreeHeap(), ESP.getMinFreeHeap(), ESP.getMaxAllocHeap(),
+               _callbacks->getQueueSize(),
+@@ -714,6 +773,9 @@ void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* re
+               (int)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL),
+               (int)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
+               (int)heap_caps_get_total_size(MALLOC_CAP_SPIRAM));
++#else
++      sprintf(reply, "Free queue slots: %d", _callbacks->getQueueSize());
++#endif
+     } else if (memcmp(command, "tls.bundletest ", 15) == 0) {
+ #ifdef ESP_PLATFORM
+       if (WiFi.status() != WL_CONNECTED) {
+diff --git a/src/helpers/MQTTPresets.h b/src/helpers/MQTTPresets.h
+index d3574055c05a18321dbd8de1e5c37b1459e9b577..17402ab0d42b6cf1aa1bc6c2b0aa2673005f7220 100644
+--- a/src/helpers/MQTTPresets.h
++++ b/src/helpers/MQTTPresets.h
+@@ -7,7 +7,9 @@ static const int MAX_MQTT_SLOTS = 6;
+ // Runtime slot array size: fewer slots on non-PSRAM boards to save ~1.2KB of heap.
+ // Non-PSRAM boards are limited to 2 active connections (_max_active_slots), so 3 runtime
+ // slots (2 active + 1 spare for reconfiguration) is sufficient.
+-#if defined(BOARD_HAS_PSRAM)
++#if defined(MQTT_RUNTIME_SLOTS)
++static const int RUNTIME_MQTT_SLOTS = MQTT_RUNTIME_SLOTS;
++#elif defined(BOARD_HAS_PSRAM)
+ static const int RUNTIME_MQTT_SLOTS = 6;
+ #else
+ static const int RUNTIME_MQTT_SLOTS = 3;
+@@ -27,7 +29,7 @@ enum MQTTTopicStyle : uint8_t {
+ };
+ 
+ struct MQTTPresetDef {
+-  const char* name;           // Preset identifier: "analyzer-us", "analyzer-eu", "meshmapper", "meshrank", "waev", ...
++  const char* name;           // Preset identifier: "analyzer-us", "analyzer-eu", "meshmapper", "canadaverse", ...
+   const char* server_url;     // Full URL including scheme: "wss://host:port/path" or "mqtts://host:port"
+   const char* jwt_audience;   // JWT audience field (only for MQTT_AUTH_JWT, nullptr otherwise)
+   const char* ca_cert;        // PEM CA certificate (nullptr to skip cert pinning)
+@@ -99,7 +101,7 @@ static const char ISRG_ROOT_X1[] PROGMEM =
+     "-----END CERTIFICATE-----\n";
+ 
+ // Number of built-in presets
+-static const int MQTT_PRESET_COUNT = 13;
++static const int MQTT_PRESET_COUNT = 14;
+ 
+ // Built-in preset definitions (stored in flash)
+ static const MQTTPresetDef MQTT_PRESETS[MQTT_PRESET_COUNT] = {
+@@ -107,6 +109,7 @@ static const MQTTPresetDef MQTT_PRESETS[MQTT_PRESET_COUNT] = {
+     { "analyzer-us",   "wss://mqtt-us-v1.letsmesh.net:443/mqtt",  "mqtt-us-v1.letsmesh.net",         GTS_ROOT_R4,   MQTT_AUTH_JWT,      MQTT_TOPIC_MESHCORE,  0,       true,   55,      nullptr,     nullptr     },
+     { "analyzer-eu",   "wss://mqtt-eu-v1.letsmesh.net:443/mqtt",  "mqtt-eu-v1.letsmesh.net",         GTS_ROOT_R4,   MQTT_AUTH_JWT,      MQTT_TOPIC_MESHCORE,  0,       true,   55,      nullptr,     nullptr     },
+     { "meshmapper",    "wss://mqtt.meshmapper.cc:443/mqtt",       "mqtt.meshmapper.cc",              ISRG_ROOT_X1,  MQTT_AUTH_JWT,      MQTT_TOPIC_MESHCORE,  0,       true,   55,      nullptr,     nullptr     },
++    { "canadaverse",   "wss://mqtt.canadaverse.org:443/mqtt",      "mqtt.canadaverse.org",            GTS_ROOT_R4,   MQTT_AUTH_JWT,      MQTT_TOPIC_MESHCORE,  0,       true,   55,      nullptr,     nullptr     },
+     { "meshrank",      "mqtts://meshrank.net:8883",               nullptr,                           ISRG_ROOT_X1,  MQTT_AUTH_NONE,     MQTT_TOPIC_MESHRANK,  0,       false,  0,       nullptr,     nullptr     },
+     { "waev",          "wss://mqtt.waev.app:443/mqtt",            "mqtt.waev.app",                   GTS_ROOT_R4,   MQTT_AUTH_JWT,      MQTT_TOPIC_MESHCORE, 3300,     false,  55,      nullptr,     nullptr     },
+     { "meshomatic",    "wss://us-east.meshomatic.net:443/mqtt",   "us-east.meshomatic.net",          ISRG_ROOT_X1,  MQTT_AUTH_JWT,      MQTT_TOPIC_MESHCORE,  0,       true,   55,      nullptr,     nullptr     },
+diff --git a/src/helpers/bridges/MQTTBridge.cpp b/src/helpers/bridges/MQTTBridge.cpp
+index e43ee162df6e276839986aa5bc95edbd66848518..1d0b9e6aa9474139865b10992eb5a7c21a364356 100644
+--- a/src/helpers/bridges/MQTTBridge.cpp
++++ b/src/helpers/bridges/MQTTBridge.cpp
+@@ -457,6 +457,19 @@ void MQTTBridge::begin() {
+   #else
+   _max_active_slots = 2;
+   #endif
++  #ifdef MAX_MQTT_BROKERS
++  if (MAX_MQTT_BROKERS > 0 && _max_active_slots > MAX_MQTT_BROKERS) {
++    _max_active_slots = MAX_MQTT_BROKERS;
++  }
++  #endif
++  #ifdef MQTT_FORCE_ACTIVE_SLOTS
++  if (MQTT_FORCE_ACTIVE_SLOTS > 0) {
++    _max_active_slots = MQTT_FORCE_ACTIVE_SLOTS;
++    if (_max_active_slots > RUNTIME_MQTT_SLOTS) {
++      _max_active_slots = RUNTIME_MQTT_SLOTS;
++    }
++  }
++  #endif
+   MQTT_DEBUG_PRINTLN("Max active slots: %d", _max_active_slots);
+ 
+   // Check if WiFi credentials are configured first
+@@ -1127,7 +1140,8 @@ void MQTTBridge::setupSlot(int index) {
+     // Custom broker slot — build persistent URI
+     // If host already has a scheme (mqtt://, mqtts://, ws://, wss://), preserve the full URI
+     // (including optional path/query) and only inject :port when the authority has no explicit port.
+-    // Otherwise, infer protocol from port number.
++    // Otherwise, infer protocol from port number. Scheme-less values may still
++    // include an authority path, e.g. mqtt1.meshcore.ca:443/mqtt.
+     bool has_scheme = (strncmp(slot.host, "mqtt://", 7) == 0 ||
+                        strncmp(slot.host, "mqtts://", 8) == 0 ||
+                        strncmp(slot.host, "ws://", 5) == 0 ||
+@@ -1171,7 +1185,36 @@ void MQTTBridge::setupSlot(int index) {
+       } else if (slot.port == 443) {
+         proto = "wss";
+       }
+-      snprintf(slot.broker_uri, sizeof(slot.broker_uri), "%s://%s:%d", proto, slot.host, slot.port);
++
++      const char* path = strchr(slot.host, '/');
++      const char* authority_end = path ? path : slot.host + strlen(slot.host);
++      bool has_explicit_port = false;
++
++      if (slot.host < authority_end) {
++        if (slot.host[0] == '[') {
++          const char* close = (const char*)memchr(slot.host, ']', authority_end - slot.host);
++          if (close && (close + 1) < authority_end && *(close + 1) == ':') {
++            has_explicit_port = true;
++          }
++        } else {
++          const char* colon = (const char*)memchr(slot.host, ':', authority_end - slot.host);
++          if (colon != nullptr) {
++            has_explicit_port = true;
++          }
++        }
++      }
++
++      if (has_explicit_port || slot.port == 0) {
++        snprintf(slot.broker_uri, sizeof(slot.broker_uri), "%s://%s", proto, slot.host);
++      } else {
++        const size_t authority_len = (size_t)(authority_end - slot.host);
++        snprintf(slot.broker_uri, sizeof(slot.broker_uri), "%s://%.*s:%u%s",
++                 proto,
++                 (int)authority_len,
++                 slot.host,
++                 (unsigned)slot.port,
++                 path ? path : "");
++      }
+     }
+     slot.client->setServer(slot.broker_uri);
+     MQTT_DEBUG_PRINTLN("MQTT%d custom broker URI: %s (host='%s', port=%u)",
+diff --git a/src/helpers/bridges/MQTTBridge.h b/src/helpers/bridges/MQTTBridge.h
+index e633e1dea5e1a5baae40d1a8e2990776b3a51ce3..8660e8af1fa67a3af1b1929e5c1c46b633529cc1 100644
+--- a/src/helpers/bridges/MQTTBridge.h
++++ b/src/helpers/bridges/MQTTBridge.h
+@@ -43,7 +43,7 @@ class MeshSNMPAgent;  // Forward declaration
+  *
+  * Features:
+  * - Up to 6 configurable MQTT connection slots (5 active with PSRAM, 2 without)
+- * - Built-in presets for LetsMesh Analyzer (US/EU), MeshMapper, MeshRank, Waev, CascadiaMesh
++ * - Built-in presets for LetsMesh Analyzer (US/EU), MeshMapper, Canadaverse, MeshRank, Waev, CascadiaMesh
+  * - Custom broker support with username/password auth
+  * - JWT authentication with Ed25519 device signing
+  * - Automatic reconnection with exponential backoff
+@@ -53,7 +53,7 @@ class MeshSNMPAgent;  // Forward declaration
+  * Configuration:
+  * - Define WITH_MQTT_BRIDGE to enable this bridge
+  * - Configure slots via: set mqtt1.preset <name>, set mqtt2.preset <name>, etc.
+- * - Available presets: analyzer-us, analyzer-eu, meshmapper, custom, none
++ * - Available presets: analyzer-us, analyzer-eu, meshmapper, canadaverse, custom, none
+  */
+ class MQTTBridge : public BridgeBase {
+ private:
+diff --git a/variants/heltec_v3/platformio.ini b/variants/heltec_v3/platformio.ini
+index eb407c46b6c1b8a7c38050303bef21d5c09cc94d..f50a579a327632f52f889f8e147031c3b9bc90fc 100644
+--- a/variants/heltec_v3/platformio.ini
++++ b/variants/heltec_v3/platformio.ini
+@@ -123,7 +123,10 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D MAX_NEIGHBOURS=50
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"none"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+   -D MQTT_MEMORY_DEBUG=1
+@@ -133,7 +136,6 @@ build_flags =
+   -D CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+   -D ESP32_CPU_FREQ=160
+   -D MQTT_WIFI_TX_POWER=WIFI_POWER_11dBm
+-  -D WITH_SNMP=1
+ #  -D WIFI_SSID='"ssid"'
+ #  -D WIFI_PWD='"password"'
+ #  -D MQTT_SERVER='"your-mqtt-broker.com"'
+@@ -144,7 +146,6 @@ build_src_filter = ${Heltec_lora32_v3.build_src_filter}
+   +<helpers/bridges/MQTTBridge.cpp>
+   +<helpers/MQTTMessageBuilder.cpp>
+   +<helpers/JWTHelper.cpp>
+-  +<helpers/SNMPAgent.cpp>
+   +<helpers/ui/SSD1306Display.cpp>
+   +<../examples/simple_repeater>
+ lib_deps =
+@@ -154,7 +155,6 @@ lib_deps =
+   bblanchon/ArduinoJson
+   arduino-libraries/NTPClient
+   JChristensen/Timezone
+-  0neblock/SNMP_Agent
+   paulstoffregen/Time@1.6.1
+ 
+ [env:Heltec_v3_room_server]
+@@ -192,7 +192,10 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D ROOM_PASSWORD='"hello"'
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"none"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MESH_PACKET_LOGGING=1
+@@ -480,7 +483,10 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D MAX_NEIGHBOURS=50
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"none"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+   -D MQTT_MEMORY_DEBUG=1
+@@ -490,7 +496,6 @@ build_flags =
+   -D CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+   -D ESP32_CPU_FREQ=160
+   -D MQTT_WIFI_TX_POWER=WIFI_POWER_11dBm
+-  -D WITH_SNMP=1
+ #  -D WIFI_SSID='"ssid"'
+ #  -D WIFI_PWD='"password"'
+ #  -D MQTT_SERVER='"your-mqtt-broker.com"'
+@@ -501,7 +506,6 @@ build_src_filter = ${Heltec_lora32_v3.build_src_filter}
+   +<helpers/bridges/MQTTBridge.cpp>
+   +<helpers/MQTTMessageBuilder.cpp>
+   +<helpers/JWTHelper.cpp>
+-  +<helpers/SNMPAgent.cpp>
+   +<../examples/simple_repeater>
+ lib_deps =
+   ${Heltec_lora32_v3.lib_deps}
+@@ -510,7 +514,6 @@ lib_deps =
+   bblanchon/ArduinoJson
+   arduino-libraries/NTPClient
+   JChristensen/Timezone
+-  0neblock/SNMP_Agent
+   paulstoffregen/Time@1.6.1
+ 
+ [env:Heltec_v3_kiss_modem]
+diff --git a/variants/heltec_v4/platformio.ini b/variants/heltec_v4/platformio.ini
+index 7d4d7058fa3c9e0b2152fde19f7459cf373faef3..d22f792d0b7e1b1f6e067ed4c3f25e7f791d6ba4 100644
+--- a/variants/heltec_v4/platformio.ini
++++ b/variants/heltec_v4/platformio.ini
+@@ -163,6 +163,9 @@ build_flags =
+   -D MAX_NEIGHBOURS=50
+   -D WITH_MQTT_BRIDGE=1
+   -D MAX_MQTT_BROKERS=3
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"meshmapper"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"canadaverse"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MQTT_MEMORY_DEBUG=1
+@@ -214,6 +217,9 @@ build_flags =
+   -D MAX_NEIGHBOURS=50
+   -D WITH_MQTT_BRIDGE=1
+   -D MAX_MQTT_BROKERS=3
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"meshmapper"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"canadaverse"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MQTT_MEMORY_DEBUG=1
+@@ -316,6 +322,9 @@ build_flags =
+   -D ROOM_PASSWORD='"hello"'
+   -D WITH_MQTT_BRIDGE=1
+   -D MAX_MQTT_BROKERS=3
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"meshmapper"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"canadaverse"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MESH_PACKET_LOGGING=1
+@@ -355,6 +364,9 @@ build_flags =
+   -D ROOM_PASSWORD='"hello"'
+   -D WITH_MQTT_BRIDGE=1
+   -D MAX_MQTT_BROKERS=3
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"meshmapper"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"canadaverse"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MESH_PACKET_LOGGING=1
+diff --git a/variants/rak3112/platformio.ini b/variants/rak3112/platformio.ini
+index 29cd30c2ecf67e8750d23b2723948bc5a1031909..1e967d8dda6c0e9e864dbaafe61aa52c35f72130 100644
+--- a/variants/rak3112/platformio.ini
++++ b/variants/rak3112/platformio.ini
+@@ -113,15 +113,18 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D MAX_NEIGHBOURS=50
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"none"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+-  -D MESH_PACKET_LOGGING=1
+-  -D MESH_DEBUG=1
++; Keep public observer builds less noisy for stability.
++;  -D MESH_PACKET_LOGGING=1
++;  -D MESH_DEBUG=1
+   -D CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+   -D ESP32_CPU_FREQ=160
+   -D MQTT_WIFI_TX_POWER=WIFI_POWER_11dBm
+-  -D WITH_SNMP=1
+ #  -D WIFI_SSID='"ssid"'
+ #  -D WIFI_PWD='"password"'
+ #  -D MQTT_SERVER='"your-mqtt-broker.com"'
+@@ -132,7 +135,6 @@ build_src_filter = ${rak3112.build_src_filter}
+   +<helpers/bridges/MQTTBridge.cpp>
+   +<helpers/MQTTMessageBuilder.cpp>
+   +<helpers/JWTHelper.cpp>
+-  +<helpers/SNMPAgent.cpp>
+   +<../examples/simple_repeater>
+ lib_deps =
+   ${rak3112.lib_deps}
+@@ -141,7 +143,6 @@ lib_deps =
+   bblanchon/ArduinoJson
+   arduino-libraries/NTPClient
+   JChristensen/Timezone
+-  0neblock/SNMP_Agent
+   paulstoffregen/Time@1.6.1
+ 
+ [env:RAK_3112_room_server]
+@@ -176,7 +177,10 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D ROOM_PASSWORD='"hello"'
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"none"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MESH_PACKET_LOGGING=1
+diff --git a/variants/xiao_s3/platformio.ini b/variants/xiao_s3/platformio.ini
+index bc00022048d8cc14e7d035a3d1c7a0b0313e936e..21fdcc09943a0ec4a0e2a01d5405f5bbc52016f5 100644
+--- a/variants/xiao_s3/platformio.ini
++++ b/variants/xiao_s3/platformio.ini
+@@ -90,6 +90,85 @@ lib_deps =
+   ${Xiao_S3.lib_deps}
+   ${esp32_ota.lib_deps}
+ 
++[env:Xiao_S3_repeater_observer_mqtt]
++extends = Xiao_S3
++extra_scripts =
++  ${esp32_base.extra_scripts}
++  pre:scripts/generate_cert_bundle.py
++board_ssl_cert_source = adafruit-full
++board_build.embed_files = src/certs/x509_crt_bundle.bin
++build_flags =
++  ${Xiao_S3.build_flags}
++  -D ADVERT_NAME='"Xiao S3 MQTT Observer"'
++  -D ADVERT_LAT=0.0
++  -D ADVERT_LON=0.0
++  -D ADMIN_PASSWORD='"password"'
++  -D MAX_NEIGHBOURS=50
++  -D WITH_MQTT_BRIDGE=1
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
++  -D MQTT_MAX_PACKET_SIZE=1024
++  -D MQTT_DEBUG=1
++  -D CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
++  -D ESP32_CPU_FREQ=160
++  -D MQTT_WIFI_TX_POWER=WIFI_POWER_11dBm
++  -D WITH_SNMP=1
++build_src_filter = ${Xiao_S3.build_src_filter}
++  +<helpers/bridges/MQTTBridge.cpp>
++  +<helpers/MQTTMessageBuilder.cpp>
++  +<helpers/JWTHelper.cpp>
++  +<helpers/SNMPAgent.cpp>
++  +<../examples/simple_repeater>
++lib_deps =
++  ${Xiao_S3.lib_deps}
++  ${esp32_ota.lib_deps}
++  elims/PsychicMqttClient@^0.2.4
++  bblanchon/ArduinoJson
++  arduino-libraries/NTPClient
++  JChristensen/Timezone
++  0neblock/SNMP_Agent
++  paulstoffregen/Time@1.6.1
++
++[env:Xiao_S3_room_server_observer_mqtt]
++extends = Xiao_S3
++extra_scripts =
++  ${esp32_base.extra_scripts}
++  pre:scripts/generate_cert_bundle.py
++board_ssl_cert_source = adafruit-full
++board_build.embed_files = src/certs/x509_crt_bundle.bin
++build_flags =
++  ${Xiao_S3.build_flags}
++  -D ADVERT_NAME='"Xiao S3 Room Observer"'
++  -D ADVERT_LAT=0.0
++  -D ADVERT_LON=0.0
++  -D ADMIN_PASSWORD='"password"'
++  -D ROOM_PASSWORD='"hello"'
++  -D WITH_MQTT_BRIDGE=1
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
++  -D MQTT_MAX_PACKET_SIZE=1024
++  -D MQTT_DEBUG=1
++  -D CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
++  -D ESP32_CPU_FREQ=160
++  -D MQTT_WIFI_TX_POWER=WIFI_POWER_11dBm
++build_src_filter = ${Xiao_S3.build_src_filter}
++  +<helpers/bridges/MQTTBridge.cpp>
++  +<helpers/MQTTMessageBuilder.cpp>
++  +<helpers/JWTHelper.cpp>
++  +<../examples/simple_room_server>
++lib_deps =
++  ${Xiao_S3.lib_deps}
++  ${esp32_ota.lib_deps}
++  elims/PsychicMqttClient@^0.2.4
++  bblanchon/ArduinoJson
++  arduino-libraries/NTPClient
++  JChristensen/Timezone
++  paulstoffregen/Time@1.6.1
++
+ [env:Xiao_S3_companion_radio_ble]
+ extends = Xiao_S3
+ build_flags =
+@@ -151,4 +230,4 @@ build_flags =
+ ;  -D MESH_DEBUG=1
+ lib_deps =
+   ${Xiao_S3.lib_deps}
+-  ${esp32_ota.lib_deps}
+\ No newline at end of file
++  ${esp32_ota.lib_deps}
+diff --git a/variants/xiao_s3_wio/platformio.ini b/variants/xiao_s3_wio/platformio.ini
+index 01934f2e5e89c4ea0c77679a75c0aea5a94f3825..a4b193ab5b2f68be2db5cd1d5d9def6f8ac0fea0 100644
+--- a/variants/xiao_s3_wio/platformio.ini
++++ b/variants/xiao_s3_wio/platformio.ini
+@@ -103,11 +103,15 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D MAX_NEIGHBOURS=50
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+-  -D MESH_PACKET_LOGGING=1
+-  -D MESH_DEBUG=1
++; Keep public observer builds less noisy for stability.
++;  -D MESH_PACKET_LOGGING=1
++;  -D MESH_DEBUG=1
+   -D CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+   -D ESP32_CPU_FREQ=160
+ #  -D WIFI_SSID='"ssid"'
+@@ -146,7 +150,10 @@ build_flags =
+   -D ADMIN_PASSWORD='"password"'
+   -D ROOM_PASSWORD='"hello"'
+   -D WITH_MQTT_BRIDGE=1
+-  -D MAX_MQTT_BROKERS=3
++  -D MAX_MQTT_BROKERS=2
++  -D DEFAULT_MQTT_SLOT0_PRESET='"analyzer-us"'
++  -D DEFAULT_MQTT_SLOT1_PRESET='"canadaverse"'
++  -D DEFAULT_MQTT_SLOT2_PRESET='"none"'
+   -D MQTT_MAX_PACKET_SIZE=1024
+   -D MQTT_DEBUG=1
+ ;  -D MESH_PACKET_LOGGING=1
