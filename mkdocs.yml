@@ -54,6 +54,32 @@ nav:
           - MeshCore-HA: analyzer/builds/meshcore-ha.md
           - MQTT Firmware: analyzer/builds/mqtt-firmware.md
           - PyMC: analyzer/builds/pymc.md
+  - Hardware: 
+      - Overview: hardware/overview.md
+      - Antenna: hardware/recommended-antenna.md
+      - Companion Nodes: hardware/recommended-companions.md
+      - Repeater Nodes: 
+          - Repeater Nodes:  hardware/recommended-repeaters.md
+          - Repeater Mounting Options: hardware/repeater-mounting-options.md
+          - 300mW Solar Repeater Build Guide: hardware/repeater-solar-300mw-diy-build.md
+          - 1W Solar Repeater Build Guide: hardware/repeater-solar-1w-diy-build.md
+      - Wire Connector Types: hardware/wire-connector-types.md
+  
+  - MeshCore:
+      - General:
+          - Overview: meshcore/general-overview.md
+          - MeshCore FAQ: meshcore/general-faq.md
+          - MeshCore How-To: meshcore/general-howto.md
+          - MeshCore Roles: meshcore/general-meshcore-roles.md
+      - Configuration:
+          - Flashing a Companion:  meshcore/flash-companion.md
+          - Flashing a Repeater: meshcore/flash-repeater.md
+          - Updating a Repeater (OTA): meshcore/update-repeater-ota.md
+          - Generating a Repeater ID: meshcore/generate-repeater-id.md
+          - Flashing a Room Server: meshcore/flash-room-server.md
+          - RAK4631 Custom Display Firmware: meshcore/firmware-rak-custom-display.md
+          - Heltec V3 Wi-Fi Firmware:  meshcore/firmware-heltec-v3-wifi.md
+
   - Mesh Directory:
       - Overview: provinces/index.md
       - British Columbia: provinces/british-columbia.md
