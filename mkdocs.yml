@@ -46,6 +46,7 @@ nav:
           - MCtoMQTT Script: analyzer/builds/mctomqtt.md
           - MeshCore-HA: analyzer/builds/meshcore-ha.md
           - MQTT Firmware: analyzer/builds/mqtt-firmware.md
+          - Heltec V3 Firmware Source: analyzer/builds/source/heltec-v3-repeater-20260521.md
           - MQTT Firmware Source: analyzer/builds/source/meshcoreCA-0521-0884734.md
           - PyMC: analyzer/builds/pymc.md
   - Hardware: 

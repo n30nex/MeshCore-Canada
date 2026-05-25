@@ -9,6 +9,7 @@ Flash observer firmware directly onto a supported board. The device connects to 
     These images are community builds based on the open source [MeshCore firmware](https://github.com/meshcore-dev/MeshCore), released under the MIT License with copyright held by Scott Powell / Ripple Radios.
     The direct MQTT observer support is built from Adam Gessaman's [`mqtt-bridge-implementation-flex`](https://github.com/agessaman/MeshCore/tree/mqtt-bridge-implementation-flex) branch.
     The 2026-05-21 MeshCore.ca images were compiled and packaged by **n30nex** with MeshCore.ca broker defaults.
+    The full source tree for the published Heltec V3 repeater firmware is available in the [Heltec V3 repeater source disclosure](source/heltec-v3-repeater-20260521.md).
     The local source delta for the `v1.15-meshcoreCA-0521-0884734` build is published in the [firmware source disclosure](source/meshcoreCA-0521-0884734.md).
     MeshCore.ca is an independent community site and is not affiliated with, endorsed by, or officially connected to MeshCore or MeshOS.
 
